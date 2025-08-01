@@ -1,0 +1,314 @@
+ -- Enable necessary extensions
+  CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+  CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+  -- ============================================================================
+  -- 1. SERVICE_DATA TABLE (Raw service records)
+  -- ============================================================================
+  CREATE TABLE service_data (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      vin VARCHAR(17) NOT NULL,
+      customer_name VARCHAR(255),
+      customer_contact VARCHAR(255),
+      service_date DATE NOT NULL,
+      odometer_reading INTEGER,
+      complaint TEXT,
+      diagnosis TEXT,
+      recommended TEXT,
+      service_performed TEXT,
+      parts_used TEXT,
+      labor_hours_billed DECIMAL(5,2),
+      technician VARCHAR(255),
+      invoice_total DECIMAL(10,2),
+      make VARCHAR(50),
+      model VARCHAR(100),
+      year INTEGER,
+
+      -- Metadata
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      shop_id UUID -- For multi-tenant support
+  );
+
+  -- ============================================================================
+  -- 2. TRANSFORMED_SERVICE_DATA TABLE (Engineered features)
+  -- ============================================================================
+  CREATE TABLE transformed_service_data (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      service_data_id UUID NOT NULL REFERENCES service_data(id) ON DELETE CASCADE,
+
+      -- Core fields (denormalized for ML performance)
+      vin VARCHAR(17) NOT NULL,
+      service_date DATE NOT NULL,
+      invoice_total DECIMAL(10,2),
+      labor_hours_billed DECIMAL(5,2),
+      odometer_reading INTEGER,
+      make VARCHAR(50),
+      model VARCHAR(100),
+      year INTEGER,
+      complaint TEXT,
+
+      -- Engineered features
+      efficiency_deviation DECIMAL(8,4) DEFAULT 0,
+      efficiency_loss DECIMAL(10,2) DEFAULT 0,
+      estimated_loss DECIMAL(10,2) DEFAULT 0,
+      repeat_45d INTEGER DEFAULT 0,
+      complaint_similarity DECIMAL(6,4) DEFAULT 0,
+      cluster_id INTEGER,
+
+      -- Classification labels
+      suspected_misdiagnosis INTEGER DEFAULT 0, -- 0=Resolved, 1=Mechanical, 2=Technician Inefficiency
+
+      -- Service categories (one-hot encoded)
+      service_oil_change BOOLEAN DEFAULT FALSE,
+      service_brake_repair BOOLEAN DEFAULT FALSE,
+      service_transmission BOOLEAN DEFAULT FALSE,
+      service_engine_repair BOOLEAN DEFAULT FALSE,
+      service_suspension BOOLEAN DEFAULT FALSE,
+      service_ac_repair BOOLEAN DEFAULT FALSE,
+      service_battery BOOLEAN DEFAULT FALSE,
+      service_tire_service BOOLEAN DEFAULT FALSE,
+      service_electrical BOOLEAN DEFAULT FALSE,
+      service_diagnostic BOOLEAN DEFAULT FALSE,
+
+      -- Metadata
+      processed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      shop_id UUID
+  );
+
+  -- ============================================================================
+  -- 3. PREDICTIONS TABLE (ML model predictions)
+  -- ============================================================================
+  CREATE TABLE predictions (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      batch_id UUID NOT NULL, -- Groups predictions from same model run
+      transformed_data_id UUID NOT NULL REFERENCES transformed_service_data(id),
+
+      -- Model information
+      model_version VARCHAR(50) NOT NULL,
+      model_path VARCHAR(255),
+
+      -- Prediction results
+      predicted_misdiagnosis INTEGER NOT NULL, -- 0, 1, or 2
+      prediction_label VARCHAR(50) NOT NULL, -- Human-readable label
+      confidence_score DECIMAL(6,4), -- If model provides probability
+
+      -- Feature importance (JSON for top features)
+      feature_importance JSONB,
+
+      -- Clustering results
+      cluster_id INTEGER,
+      cluster_title VARCHAR(255),
+      estimated_loss_per_vehicle DECIMAL(10,2),
+
+      -- Metadata
+      predicted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      shop_id UUID
+  );
+
+  -- ============================================================================
+  -- 4. REVIEWS TABLE (Customer feedback data)
+  -- ============================================================================
+  CREATE TABLE reviews (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+
+      -- Review source and identification
+      source VARCHAR(20) NOT NULL CHECK (source IN ('google', 'yelp', 'bing', 'csv')),
+      external_id VARCHAR(255), -- Source-specific ID
+
+      -- Review content
+      author_name VARCHAR(255),
+      review_date DATE NOT NULL,
+      rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+      review_text TEXT,
+
+      -- Sentiment analysis
+      sentiment_score DECIMAL(6,4), -- -1 to 1 (negative to positive)
+      sentiment_label VARCHAR(20), -- 'positive', 'negative', 'neutral'
+
+      -- Keywords extraction
+      keywords TEXT[], -- Array of extracted keywords
+
+      -- Business metrics aggregation helper
+      is_recent BOOLEAN DEFAULT TRUE, -- Within lookback period
+
+      -- Metadata
+      ingested_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      shop_id UUID,
+
+      -- Prevent duplicate reviews
+      UNIQUE(source, external_id, shop_id)
+  );
+
+  -- ============================================================================
+  -- 5. BUSINESS_INSIGHTS TABLE (Generated insights and recommendations)
+  -- ============================================================================
+  CREATE TABLE business_insights (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      batch_id UUID NOT NULL, -- Links to prediction batch
+
+      -- Insight type
+      insight_type VARCHAR(50) NOT NULL CHECK (insight_type IN ('cluster_summary', 'corrective_action', 'issue_title')),
+
+      -- Cluster information
+      cluster_id INTEGER,
+      cluster_title VARCHAR(255),
+
+      -- Financial metrics
+      estimated_total_loss DECIMAL(12,2),
+      vehicles_affected INTEGER,
+      impact_data JSONB, -- Structured business impact metrics
+
+      -- AI-generated content
+      summary_content TEXT,
+      recommendations TEXT,
+
+      -- Sample data used for generation
+      sample_complaints TEXT[],
+      top_vehicles JSONB,
+
+      -- Metadata
+      generated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      gpt_model VARCHAR(50) DEFAULT 'gpt-4o-mini',
+      shop_id UUID
+  );
+
+  -- ============================================================================
+  -- INDEXES FOR PERFORMANCE
+  -- ============================================================================
+
+  -- Service data indexes
+  CREATE INDEX idx_service_data_vin_date ON service_data(vin, service_date);
+  CREATE INDEX idx_service_data_shop_date ON service_data(shop_id, service_date);
+  CREATE INDEX idx_service_data_make_model_year ON service_data(make, model, year);
+
+  -- Transformed data indexes
+  CREATE INDEX idx_transformed_vin_date ON transformed_service_data(vin, service_date);
+  CREATE INDEX idx_transformed_cluster ON transformed_service_data(cluster_id);
+  CREATE INDEX idx_transformed_misdiagnosis ON transformed_service_data(suspected_misdiagnosis);
+  CREATE INDEX idx_transformed_shop_date ON transformed_service_data(shop_id, service_date);
+
+  -- Predictions indexes
+  CREATE INDEX idx_predictions_batch ON predictions(batch_id);
+  CREATE INDEX idx_predictions_cluster ON predictions(cluster_id);
+  CREATE INDEX idx_predictions_shop_date ON predictions(shop_id, predicted_at);
+
+  -- Reviews indexes
+  CREATE INDEX idx_reviews_shop_date ON reviews(shop_id, review_date);
+  CREATE INDEX idx_reviews_source ON reviews(source);
+  CREATE INDEX idx_reviews_recent ON reviews(is_recent) WHERE is_recent = TRUE;
+
+  -- Business insights indexes
+  CREATE INDEX idx_insights_batch ON business_insights(batch_id);
+  CREATE INDEX idx_insights_cluster ON business_insights(cluster_id);
+  CREATE INDEX idx_insights_type ON business_insights(insight_type);
+
+  -- ============================================================================
+  -- ROW LEVEL SECURITY (Multi-tenant support)
+  -- ============================================================================
+
+  -- Enable RLS on all tables
+  ALTER TABLE service_data ENABLE ROW LEVEL SECURITY;
+  ALTER TABLE transformed_service_data ENABLE ROW LEVEL SECURITY;
+  ALTER TABLE predictions ENABLE ROW LEVEL SECURITY;
+  ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
+  ALTER TABLE business_insights ENABLE ROW LEVEL SECURITY;
+
+  -- Example RLS policies (customize based on your auth setup)
+  CREATE POLICY "Users can view their shop data" ON service_data
+      FOR SELECT USING (shop_id = auth.jwt() ->> 'shop_id'::text);
+
+  CREATE POLICY "Users can insert their shop data" ON service_data
+      FOR INSERT WITH CHECK (shop_id = auth.jwt() ->> 'shop_id'::text);
+
+  -- Apply similar policies to other tables...
+
+  -- ============================================================================
+  -- FUNCTIONS FOR AUTOMATION
+  -- ============================================================================
+
+  -- Function to update updated_at timestamp
+  CREATE OR REPLACE FUNCTION update_updated_at_column()
+  RETURNS TRIGGER AS $$
+  BEGIN
+      NEW.updated_at = NOW();
+      RETURN NEW;
+  END;
+  $$ language 'plpgsql';
+
+  -- Trigger for service_data
+  CREATE TRIGGER update_service_data_updated_at
+      BEFORE UPDATE ON service_data
+      FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+  -- Function to automatically categorize services
+  CREATE OR REPLACE FUNCTION categorize_service_performed()
+  RETURNS TRIGGER AS $$
+  BEGIN
+      -- Reset all service categories
+      NEW.service_oil_change := FALSE;
+      NEW.service_brake_repair := FALSE;
+      NEW.service_transmission := FALSE;
+      NEW.service_engine_repair := FALSE;
+      NEW.service_suspension := FALSE;
+      NEW.service_ac_repair := FALSE;
+      NEW.service_battery := FALSE;
+      NEW.service_tire_service := FALSE;
+      NEW.service_electrical := FALSE;
+      NEW.service_diagnostic := FALSE;
+
+      -- Categorize based on service_performed content
+      IF position('oil' in lower(COALESCE((SELECT service_performed FROM service_data WHERE id = NEW.service_data_id), ''))) > 0 THEN
+          NEW.service_oil_change := TRUE;
+      END IF;
+
+      IF position('brake' in lower(COALESCE((SELECT service_performed FROM service_data WHERE id = NEW.service_data_id), ''))) > 0 THEN
+          NEW.service_brake_repair := TRUE;
+      END IF;
+
+      -- Add more categorization logic as needed...
+
+      RETURN NEW;
+  END;
+  $$ language 'plpgsql';
+
+  -- Trigger for automatic service categorization
+  CREATE TRIGGER categorize_services
+      BEFORE INSERT OR UPDATE ON transformed_service_data
+      FOR EACH ROW EXECUTE FUNCTION categorize_service_performed();
+
+  -- ============================================================================
+  -- VIEWS FOR COMMON QUERIES
+  -- ============================================================================
+
+  -- View for dashboard summary
+  CREATE VIEW dashboard_summary AS
+  SELECT
+      t.shop_id,
+      COUNT(*) as total_services,
+      COUNT(DISTINCT t.vin) as unique_vehicles,
+      AVG(t.invoice_total) as avg_invoice,
+      SUM(CASE WHEN t.suspected_misdiagnosis > 0 THEN 1 ELSE 0 END) as suspected_issues,
+      SUM(t.estimated_loss) as total_estimated_loss
+  FROM transformed_service_data t
+  WHERE t.service_date >= CURRENT_DATE - INTERVAL '90 days'
+  GROUP BY t.shop_id;
+
+  -- View for recent predictions with insights
+  CREATE VIEW recent_predictions_with_insights AS
+  SELECT
+      p.id,
+      p.batch_id,
+      p.predicted_misdiagnosis,
+      p.prediction_label,
+      p.cluster_id,
+      p.estimated_loss_per_vehicle,
+      bi.cluster_title,
+      bi.summary_content,
+      bi.recommendations,
+      p.predicted_at
+  FROM predictions p
+  LEFT JOIN business_insights bi ON p.cluster_id = bi.cluster_id
+      AND bi.insight_type = 'cluster_summary'
+  WHERE p.predicted_at >= CURRENT_DATE - INTERVAL '30 days'
+  ORDER BY p.predicted_at DESC;
