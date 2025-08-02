@@ -16,7 +16,7 @@ export default function Dashboard() {
   const [filteredData, setFilteredData] = useState<any[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
-    dateRange: 'last_year',
+    dateRange: 'all',
     technicians: [] as string[],
     makes: [] as string[],
     complaints: [] as string[],
@@ -83,6 +83,7 @@ export default function Dashboard() {
         filtered = filtered.filter(item => item.estimated_loss >= filters.minLoss)
       }
 
+      console.log('Filter applied - original:', data.length, 'filtered:', filtered.length)
       setFilteredData(filtered)
     }
   }, [data, filters])
@@ -135,13 +136,7 @@ export default function Dashboard() {
 
           {/* Main dashboard content */}
           <div className="lg:col-span-3 space-y-8">
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-bold mb-4">Raw Data Test</h2>
-              <p>Data received: {filteredData?.length || 0} records</p>
-              <pre className="text-xs bg-gray-100 p-2 mt-2 overflow-auto">
-                {JSON.stringify(filteredData?.[0], null, 2)}
-              </pre>
-            </div>
+            <MetricsGrid data={filteredData} />
 
             <AlertsSection data={filteredData} />
 
