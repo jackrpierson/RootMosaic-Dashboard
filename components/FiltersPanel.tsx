@@ -20,6 +20,18 @@ export default function FiltersPanel({ data, filters, onFiltersChange }: Filters
     })
   }
 
+  const clearAllFilters = () => {
+    onFiltersChange({
+      dateRange: 'all',
+      technician: null,
+      make: null,
+      year: null,
+      complaint: null,
+      minLoss: 0,
+      problemType: null
+    })
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">Filters</h3>
@@ -147,15 +159,7 @@ export default function FiltersPanel({ data, filters, onFiltersChange }: Filters
 
       {/* Clear Filters Button */}
       <button
-        onClick={() => onFiltersChange({
-          dateRange: 'all',
-          technician: null,
-          make: null,
-          year: null,
-          complaint: null,
-          minLoss: 0,
-          problemType: null
-        })}
+        onClick={clearAllFilters}
         className="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors"
       >
         Clear All Filters
