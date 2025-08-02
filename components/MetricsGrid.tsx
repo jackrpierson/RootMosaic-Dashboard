@@ -12,12 +12,27 @@ export default function MetricsGrid({ data }: MetricsGridProps) {
 
   useEffect(() => {
     if (data) {
-      const calculatedMetrics = loadMetrics(data)
-      setMetrics(calculatedMetrics)
+      console.log('MetricsGrid received data:', data.length, 'records')
+      console.log('First record fields:', Object.keys(data[0] || {}))
+      
+      try {
+        const calculatedMetrics = loadMetrics(data)
+        console.log('Calculated metrics:', calculatedMetrics)
+        setMetrics(calculatedMetrics)
+      } catch (error) {
+        console.error('Error calculating metrics:', error)
+      }
     }
   }, [data])
 
-  if (!metrics) return null
+  if (!metrics) {
+    return (
+      <div className="bg-white rounded-lg shadow p-6">
+        <p>Loading metrics...</p>
+        <p>Data received: {data?.length || 0} records</p>
+      </div>
+    )
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -70,4 +85,4 @@ export default function MetricsGrid({ data }: MetricsGridProps) {
       </div>
     </div>
   )
-} 
+}
