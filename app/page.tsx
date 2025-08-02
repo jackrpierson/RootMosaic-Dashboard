@@ -85,8 +85,8 @@ export default function Dashboard() {
       }
 
       // Apply year filter
-      if (filters.year) {
-        const yearValue = parseInt(filters.year.toString())
+      if (filters.year !== null) {
+        const yearValue = parseInt(String(filters.year))
         filtered = filtered.filter(item => item.year === yearValue)
       }
 
