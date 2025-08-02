@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom component styles */
+.metric-card {
+  @apply bg-white rounded-lg shadow-md p-6 border-l-4 border-primary-500;
+}
+
+.alert-card {
+  @apply bg-red-50 border-l-4 border-red-500 p-4 rounded-lg;
+}
+
+.success-card {
+  @apply bg-green-50 border-l-4 border-green-500 p-4 rounded-lg;
+}
+
+.warning-card {
+  @apply bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-lg;
+}
+
+.insight-card {
+  @apply bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg;
+}
+
+/* Dashboard specific styles */
+.dashboard-header {
+  @apply text-3xl font-bold text-gray-800 mb-8 text-center;
+}
+
+.metric-value {
+  @apply text-2xl font-bold;
+}
+
+.metric-label {
+  @apply text-sm text-gray-600 uppercase tracking-wide;
+}
+
+.filter-section {
+  @apply bg-gray-50 p-4 rounded-lg mb-6;
+}
+
+.chart-container {
+  @apply bg-white rounded-lg shadow-md p-6;
+} 

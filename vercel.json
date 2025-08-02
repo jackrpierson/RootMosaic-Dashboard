@@ -1,8 +1,21 @@
 {
+  "version": 2,
+  "name": "rootmosaic-dashboard",
   "builds": [
     {
-      "src": "Dockerfile",
-      "use": "@vercel/docker"
+      "src": "package.json",
+      "use": "@vercel/next"
     }
-  ]
+  ],
+  "env": {
+    "SUPABASE_URL": "@supabase_url",
+    "SUPABASE_ANON_KEY": "@supabase_anon_key",
+    "SHOP_ID": "@shop_id",
+    "OPENAI_API_KEY": "@openai_api_key"
+  },
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
 }
