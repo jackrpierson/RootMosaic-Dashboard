@@ -1,3 +1,4 @@
+cat > app/api/transformed-data/route.ts << 'EOF'
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
@@ -30,4 +31,5 @@ export async function GET() {
     console.error('API error:', error)
     return NextResponse.json({ error: 'Internal server error', details: error }, { status: 500 })
   }
-} 
+}
+EOF
