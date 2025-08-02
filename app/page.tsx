@@ -29,6 +29,7 @@ export default function Dashboard() {
         console.log('Loading data...')
         const transformedData = await loadTransformedData()
         console.log('Data loaded:', transformedData?.length || 0, 'records')
+        console.log('First record sample:', transformedData?.[0])
         setData(transformedData)
         setFilteredData(transformedData)
         setLoading(false)
@@ -97,7 +98,7 @@ export default function Dashboard() {
     )
   }
 
-  if (!data || data.length === 0) {
+  if (!data) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
