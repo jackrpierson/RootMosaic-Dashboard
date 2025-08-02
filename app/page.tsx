@@ -26,7 +26,9 @@ export default function Dashboard() {
   useEffect(() => {
     const loadData = async () => {
       try {
+        console.log('Loading data...')
         const transformedData = await loadTransformedData()
+        console.log('Data loaded:', transformedData?.length || 0, 'records')
         setData(transformedData)
         setFilteredData(transformedData)
         setLoading(false)
@@ -100,7 +102,16 @@ export default function Dashboard() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">No Data Available</h1>
-          <p className="text-gray-600">Please ensure your service data has been processed and is available.</p>
+          <p className="text-gray-600 mb-4">Please ensure your service data has been processed and is available.</p>
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 max-w-md mx-auto">
+            <h3 className="font-semibold text-yellow-800 mb-2">Troubleshooting:</h3>
+            <ul className="text-sm text-yellow-700 space-y-1">
+              <li>• Check environment variables in Vercel</li>
+              <li>• Ensure Supabase table has data</li>
+              <li>• Verify API route is working</li>
+              <li>• Check browser console for errors</li>
+            </ul>
+          </div>
         </div>
       </div>
     )
