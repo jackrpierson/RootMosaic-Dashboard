@@ -85,8 +85,9 @@ export default function Dashboard() {
       }
 
       // Apply year filter
-      if (filters.year && typeof filters.year === 'string') {
-        filtered = filtered.filter(item => item.year === parseInt(filters.year))
+      if (filters.year) {
+        const yearValue = parseInt(filters.year.toString())
+        filtered = filtered.filter(item => item.year === yearValue)
       }
 
       // Apply complaint filter
