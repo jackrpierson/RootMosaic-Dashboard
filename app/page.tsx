@@ -42,17 +42,17 @@ export default function Dashboard() {
     loadData()
   }, [])
 
-            useEffect(() => {
-            if (data) {
-              // Apply filters to data
-              let filtered: any[] = data
-      
+  useEffect(() => {
+    if (data) {
+      // Apply filters to data
+      let filtered: any[] = data
+
       // Apply date range filter
       const now = new Date()
       const lastYear = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate())
       const last6Months = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate())
       const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate())
-      
+
       switch (filters.dateRange) {
         case 'last_month':
           filtered = filtered.filter(item => new Date(item.service_date) >= lastMonth)
@@ -65,24 +65,24 @@ export default function Dashboard() {
           break
         // 'all' keeps all data
       }
-      
+
       // Apply other filters
       if (filters.technicians.length > 0) {
         filtered = filtered.filter(item => filters.technicians.includes(item.technician))
       }
-      
+
       if (filters.makes.length > 0) {
         filtered = filtered.filter(item => filters.makes.includes(item.make))
       }
-      
+
       if (filters.complaints.length > 0) {
         filtered = filtered.filter(item => filters.complaints.includes(item.complaint))
       }
-      
+
       if (filters.minLoss > 0) {
         filtered = filtered.filter(item => item.estimated_loss >= filters.minLoss)
       }
-      
+
       setFilteredData(filtered)
     }
   }, [data, filters])
@@ -121,34 +121,40 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardHeader />
-      
+
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar with filters */}
           <div className="lg:col-span-1">
-            <FiltersPanel 
+            <FiltersPanel
               data={data}
               filters={filters}
               onFiltersChange={setFilters}
             />
           </div>
-          
+
           {/* Main dashboard content */}
           <div className="lg:col-span-3 space-y-8">
-            <MetricsGrid data={filteredData} />
-            
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-bold mb-4">Raw Data Test</h2>
+              <p>Data received: {filteredData?.length || 0} records</p>
+              <pre className="text-xs bg-gray-100 p-2 mt-2 overflow-auto">
+                {JSON.stringify(filteredData?.[0], null, 2)}
+              </pre>
+            </div>
+
             <AlertsSection data={filteredData} />
-            
+
             <TechnicianAnalysis data={filteredData} />
-            
+
             <SystemicIssues data={filteredData} />
-            
+
             <FinancialCalculator data={filteredData} />
-            
+
             <PredictiveAnalytics data={filteredData} />
           </div>
         </div>
       </div>
     </div>
   )
-} 
+}
