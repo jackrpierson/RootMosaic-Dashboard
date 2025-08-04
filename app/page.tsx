@@ -91,11 +91,11 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <DashboardHeader />
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="container mx-auto px-6 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 animate-fade-in">
           {/* Sidebar with filters */}
           <div className="lg:col-span-1">
             <FiltersPanel
@@ -107,25 +107,42 @@ export default function Dashboard() {
 
           {/* Main dashboard content */}
           <div className="lg:col-span-3 space-y-8">
-            <div className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-400">
-              <p className="text-sm text-gray-600">
-                Showing {filteredData.length} records {totalRecords ? `of ${totalRecords} total` : ''}
-              </p>
+            {/* Status Bar */}
+            <div className="glass p-4 rounded-xl border-l-4 border-l-emerald-400 animate-slide-up">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+                  <p className="text-sm font-medium text-slate-700">
+                    Active Analysis: {filteredData.length} records {totalRecords ? `of ${totalRecords} total` : ''}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                    Real-time
+                  </span>
+                  <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                    Synced
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <MetricsGrid data={filteredData} />
+            {/* Main Content Grid */}
+            <div className="space-y-8">
+              <MetricsGrid data={filteredData} />
+              
+              <ActionItems data={filteredData} />
 
-            <ActionItems data={filteredData} />
+              <AlertsSection data={filteredData} />
 
-            <AlertsSection data={filteredData} />
+              <TechnicianAnalysis data={filteredData} />
 
-            <TechnicianAnalysis data={filteredData} />
+              <SystemicIssues data={filteredData} />
 
-            <SystemicIssues data={filteredData} />
+              <FinancialCalculator data={filteredData} />
 
-            <FinancialCalculator data={filteredData} />
-
-            <PredictiveAnalytics data={filteredData} />
+              <PredictiveAnalytics data={filteredData} />
+            </div>
           </div>
         </div>
       </div>

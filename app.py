@@ -185,8 +185,8 @@ if not df.empty:
         custom_default_start = max_date - pd.DateOffset(months=3) if pd.notna(max_date) else dt.datetime.today() - pd.DateOffset(months=3)
         custom_default_end = max_date if pd.notna(max_date) else dt.datetime.today()
         
-        start_date, end_date = st.sidebar.slider(
-            "Select Date Range",
+    start_date, end_date = st.sidebar.slider(
+        "Select Date Range",
             min_value=slider_min,
             max_value=slider_max,
             value=(custom_default_start.to_pydatetime(), custom_default_end.to_pydatetime()),
@@ -767,7 +767,7 @@ if not df.empty:
         systemic_issues = []
         for (make, model, year), group in vehicle_groups:
             if len(group) >= 2:  # Only vehicles with multiple visits
-                complaints = group["complaint"].dropna().tolist()
+            complaints = group["complaint"].dropna().tolist()
                 total_loss = group["estimated_loss"].sum()
                 efficiency_loss = group["efficiency_loss"].sum()
                 misdiagnosis_count = group["suspected_misdiagnosis"].sum()

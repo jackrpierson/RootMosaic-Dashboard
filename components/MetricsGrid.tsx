@@ -1,14 +1,110 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { SimpleGrid, Card, Text, Group, RingProgress, Badge, Skeleton, ThemeIcon, Stack, NumberFormatter } from '@mantine/core'
+import { IconAlertTriangle, IconClock, IconCash, IconTarget, IconTrendingUp, IconTrendingDown } from '@tabler/icons-react'
 import { loadMetrics } from '@/lib/dataLoader'
 
 interface MetricsGridProps {
   data: any[] | null
 }
 
+interface MetricCardProps {
+  title: string
+  value: number
+  subtitle: string
+  icon: React.ReactNode
+  color: 'red' | 'orange' | 'green' | 'blue'
+  progress?: number
+  trend?: 'up' | 'down' | 'neutral'
+  format?: 'currency' | 'percentage' | 'number'
+}
+
+function MetricCard({ title, value, subtitle, icon, color, progress, trend, format = 'number' }: MetricCardProps) {
+  const formatValue = () => {
+    switch (format) {
+      case 'currency':
+        return <NumberFormatter value={value} prefix="$" thousandSeparator />
+      case 'percentage':
+        return `${value.toFixed(1)}%`
+      default:
+        return value.toLocaleString()
+    }
+  }
+
+  const getTrendIcon = () => {
+    if (trend === 'up') return <IconTrendingUp size={16} className="text-red-500" />
+    if (trend === 'down') return <IconTrendingDown size={16} className="text-green-500" />
+    return null
+  }
+
+  return (
+    <Card 
+      className="animate-scale-in hover:shadow-lg transition-all duration-300 border-l-4 border-l-gray-200 hover:border-l-blue-400"
+      p="lg"
+    >
+      <Group justify="space-between" mb="md">
+        <ThemeIcon 
+          size="lg" 
+          variant="gradient"
+          gradient={
+            color === 'red' ? { from: 'red', to: 'pink' } :
+            color === 'orange' ? { from: 'orange', to: 'yellow' } :
+            color === 'green' ? { from: 'green', to: 'teal' } :
+            { from: 'blue', to: 'cyan' }
+          }
+          className="shadow-md"
+        >
+          {icon}
+        </ThemeIcon>
+        {progress !== undefined && (
+          <RingProgress
+            size={60}
+            thickness={6}
+            sections={[{ value: progress, color }]}
+            label={
+              <Text size="xs" ta="center" fw={700}>
+                {progress.toFixed(0)}%
+              </Text>
+            }
+          />
+        )}
+      </Group>
+
+      <Stack gap="xs">
+        <Text size="sm" c="dimmed" tt="uppercase" fw={600} lts="0.05em">
+          {title}
+        </Text>
+        
+        <Group gap="xs" align="center">
+          <Text size="xl" fw={700} className="text-slate-800">
+            {formatValue()}
+          </Text>
+          {getTrendIcon()}
+        </Group>
+
+        <Text size="sm" c="dimmed">
+          {subtitle}
+        </Text>
+
+        {color === 'red' && (
+          <Badge variant="light" color="red" size="sm">
+            Needs Attention
+          </Badge>
+        )}
+        {color === 'green' && (
+          <Badge variant="light" color="green" size="sm">
+            Opportunity
+          </Badge>
+        )}
+      </Stack>
+    </Card>
+  )
+}
+
 export default function MetricsGrid({ data }: MetricsGridProps) {
   const [metrics, setMetrics] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (data) {
@@ -21,68 +117,120 @@ export default function MetricsGrid({ data }: MetricsGridProps) {
         setMetrics(calculatedMetrics)
       } catch (error) {
         console.error('Error calculating metrics:', error)
+      } finally {
+        setLoading(false)
       }
     }
   }, [data])
 
-  if (!metrics) {
+  if (loading || !metrics) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
-        <p>Loading metrics...</p>
-        <p>Data received: {data?.length || 0} records</p>
-      </div>
+      <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="lg">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Card key={index} p="lg">
+            <Skeleton height={20} mb="md" />
+            <Skeleton height={30} mb="sm" />
+            <Skeleton height={15} />
+          </Card>
+        ))}
+      </SimpleGrid>
     )
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {/* Misdiagnosis Rate */}
-      <div className="metric-card">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="metric-label">Misdiagnosis Rate</p>
-            <p className="metric-value text-red-600">{metrics.misdiagnosisRate.toFixed(1)}%</p>
-            <p className="text-sm text-gray-500">{metrics.totalMisdiagnosis} cases detected</p>
-          </div>
-          <div className="text-3xl">🚨</div>
-        </div>
-      </div>
+    <div className="animate-fade-in">
+      <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="lg">
+        <MetricCard
+          title="Process Issues Detected"
+          value={metrics.misdiagnosisRate}
+          subtitle={`${metrics.totalMisdiagnosis} cases requiring attention`}
+          icon={<IconAlertTriangle size={20} />}
+          color="red"
+          progress={metrics.misdiagnosisRate}
+          trend="up"
+          format="percentage"
+        />
 
-      {/* Efficiency Loss */}
-      <div className="metric-card">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="metric-label">Efficiency Loss</p>
-            <p className="metric-value text-orange-600">${metrics.totalEfficiencyLoss.toLocaleString()}</p>
-            <p className="text-sm text-gray-500">Lost due to inefficiency</p>
-          </div>
-          <div className="text-3xl">⏱️</div>
-        </div>
-      </div>
+        <MetricCard
+          title="Efficiency Impact"
+          value={metrics.totalEfficiencyLoss}
+          subtitle="Process optimization potential"
+          icon={<IconClock size={20} />}
+          color="orange"
+          progress={75}
+          format="currency"
+        />
 
-      {/* Total Estimated Loss */}
-      <div className="metric-card">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="metric-label">Total Estimated Loss</p>
-            <p className="metric-value text-red-600">${metrics.totalEstimatedLoss.toLocaleString()}</p>
-            <p className="text-sm text-gray-500">Combined impact</p>
-          </div>
-          <div className="text-3xl">💰</div>
-        </div>
-      </div>
+        <MetricCard
+          title="Total System Loss"
+          value={metrics.totalEstimatedLoss}
+          subtitle="Comprehensive impact analysis"
+          icon={<IconCash size={20} />}
+          color="red"
+          trend="up"
+          format="currency"
+        />
 
-      {/* Potential Savings */}
-      <div className="metric-card">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="metric-label">Potential Savings</p>
-            <p className="metric-value text-green-600">${metrics.potentialSavings.toLocaleString()}</p>
-            <p className="text-sm text-gray-500">With corrective action</p>
-          </div>
-          <div className="text-3xl">🎯</div>
-        </div>
-      </div>
+        <MetricCard
+          title="Improvement Potential"
+          value={metrics.potentialSavings}
+          subtitle="With systematic corrections"
+          icon={<IconTarget size={20} />}
+          color="green"
+          progress={85}
+          trend="down"
+          format="currency"
+        />
+      </SimpleGrid>
+
+      {/* Additional Performance Indicators */}
+      <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="lg" mt="xl">
+        <Card className="glass border-l-4 border-l-blue-400" p="md">
+          <Group justify="space-between">
+            <div>
+              <Text size="sm" c="dimmed" fw={600}>First-Time Fix Rate</Text>
+              <Text size="lg" fw={700} c="blue">
+                {metrics.firstTimeFixRate.toFixed(1)}%
+              </Text>
+            </div>
+            <RingProgress
+              size={50}
+              thickness={4}
+              sections={[{ value: metrics.firstTimeFixRate, color: 'blue' }]}
+            />
+          </Group>
+        </Card>
+
+        <Card className="glass border-l-4 border-l-green-400" p="md">
+          <Group justify="space-between">
+            <div>
+              <Text size="sm" c="dimmed" fw={600}>Revenue per Hour</Text>
+              <Text size="lg" fw={700} c="green">
+                <NumberFormatter value={metrics.revenuePerHour} prefix="$" decimalScale={0} />
+              </Text>
+            </div>
+            <ThemeIcon variant="light" color="green" size="lg">
+              <IconTrendingUp size={20} />
+            </ThemeIcon>
+          </Group>
+        </Card>
+
+        <Card className="glass border-l-4 border-l-purple-400" p="md">
+          <Group justify="space-between">
+            <div>
+              <Text size="sm" c="dimmed" fw={600}>Productivity Index</Text>
+              <Text size="lg" fw={700} c="grape">
+                {metrics.productivityIndex.toFixed(0)}/100
+              </Text>
+            </div>
+            <RingProgress
+              size={50}
+              thickness={4}
+              sections={[{ value: metrics.productivityIndex, color: 'grape' }]}
+            />
+          </Group>
+        </Card>
+      </SimpleGrid>
     </div>
   )
 }

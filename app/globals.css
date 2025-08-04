@@ -1,3 +1,9 @@
+@import '@mantine/core/styles.css';
+@import '@mantine/dates/styles.css';
+@import '@mantine/notifications/styles.css';
+@import '@mantine/charts/styles.css';
+@import '@mantine/dropzone/styles.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -69,4 +75,119 @@ body {
 
 .chart-container {
   @apply bg-white rounded-lg shadow-md p-6;
+}
+
+/* Enterprise-grade enhancements */
+:root {
+  --enterprise-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --success-gradient: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --error-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --shadow-enterprise: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* Glass morphism utility classes */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+}
+
+/* Enterprise gradient backgrounds */
+.bg-enterprise {
+  background: var(--enterprise-gradient);
+}
+
+.bg-success-gradient {
+  background: var(--success-gradient);
+}
+
+.bg-warning-gradient {
+  background: var(--warning-gradient);
+}
+
+.bg-error-gradient {
+  background: var(--error-gradient);
+}
+
+/* Professional animations */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0; 
+    transform: scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+/* Custom scrollbar for enterprise feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Responsive typography */
+.text-enterprise-h1 {
+  @apply text-4xl lg:text-5xl font-semibold text-slate-900 leading-tight;
+}
+
+.text-enterprise-h2 {
+  @apply text-2xl lg:text-3xl font-semibold text-slate-800 leading-tight;
+}
+
+.text-enterprise-h3 {
+  @apply text-xl lg:text-2xl font-medium text-slate-800 leading-snug;
+}
+
+.text-enterprise-body {
+  @apply text-base text-slate-600 leading-relaxed;
+}
+
+.text-enterprise-caption {
+  @apply text-sm text-slate-500 leading-normal;
 } 

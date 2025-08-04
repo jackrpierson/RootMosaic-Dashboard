@@ -9,7 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mantine/charts": "^7.12.2",
+    "@mantine/core": "^7.12.2",
+    "@mantine/dates": "^7.12.2",
+    "@mantine/dropzone": "^7.12.2",
+    "@mantine/form": "^7.12.2",
+    "@mantine/hooks": "^7.12.2",
+    "@mantine/notifications": "^7.12.2",
     "@supabase/supabase-js": "^2.38.4",
+    "@tabler/icons-react": "^3.14.0",
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.2",
     "chart.js": "^4.4.0",
