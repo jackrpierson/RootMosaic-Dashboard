@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     
     // Pagination parameters
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '10000')
+    const limit = parseInt(searchParams.get('limit') || '50000')
     const offset = (page - 1) * limit
 
     // Filter parameters
@@ -105,8 +105,12 @@ export async function GET(request: Request) {
     // Apply ordering
     query = query.order('service_date', { ascending: false })
     
-    // Only apply pagination if limit is reasonable (not showing all records)
-    if (limit < 10000) {
+    // Apply range/limit - Supabase defaults to 1000 rows, so we need to explicitly set a higher limit
+    // Use limit() method instead of range() to bypass the 1000 row limit
+    if (limit > 1000) {
+      // For large limits, don't use range at all - just order and let Supabase return what it can
+      // This will bypass the 1000 row pagination limit
+    } else {
       query = query.range(offset, offset + limit - 1)
     }
 

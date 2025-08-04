@@ -252,37 +252,35 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80,
                                    labels=["Low", "Medium", "High", "Very High"],
                                    include_lowest=True)
 
-    # Enhanced Loss Calculation - Comprehensive Business Impact
+    # ===== ENHANCED DATA-DRIVEN FINANCIAL MODEL =====
+    # Import the enhanced financial model
+    from enhanced_financial_model import integrate_enhanced_financial_model
     
-    # 1. Labor Inefficiency Loss (Current calculation, but more sophisticated)
+    # Apply data-driven financial calculations
+    df, savings_analysis = integrate_enhanced_financial_model(df, labor_rate)
+    
+    # Store savings analysis for reporting
+    print(f"\n=== SAVINGS ANALYSIS SUMMARY ===")
+    print(f"Conservative Savings Potential: ${savings_analysis['conservative_savings']:,.0f}")
+    print(f"Hour Savings Potential: {savings_analysis['hour_savings_potential']:.1f} hours")
+    print(f"Comeback Improvement Potential: {savings_analysis['comeback_improvement_potential']:.1%}")
+    
+    # Legacy calculations for backward compatibility (replaced by data-driven model above)
+    """
+    OLD ASSUMPTION-BASED MODEL (REPLACED):
+    
+    # 1. Labor Inefficiency Loss
     df["labor_inefficiency_loss"] = df["efficiency_loss"] * labor_rate
     
-    # 2. Parts Waste and Over-Ordering Loss
-    # Estimate parts waste based on repeat visits and misdiagnosis
-    if "invoice_total" in df.columns and "labor_hours_billed" in df.columns:
-        # Estimate parts cost (typically 40-60% of invoice total)
-        estimated_parts_cost = df["invoice_total"] * 0.5
-        # Parts waste factor based on misdiagnosis probability
-        parts_waste_factor = df["misdiagnosis_probability"] * 0.3  # 30% waste for misdiagnosed jobs
-        df["parts_waste_loss"] = estimated_parts_cost * parts_waste_factor
-    else:
-        df["parts_waste_loss"] = 0
+    # 2. Parts Waste (assumption-based)
+    estimated_parts_cost = df["invoice_total"] * 0.5  # ASSUMPTION: 50% parts
+    parts_waste_factor = df["misdiagnosis_probability"] * 0.3  # ASSUMPTION: 30% waste
+    df["parts_waste_loss"] = estimated_parts_cost * parts_waste_factor
+    """
     
-    # 3. Opportunity Cost Loss
-    # Calculate lost revenue from bay time that could have been used for other jobs
-    if "labor_hours_billed" in df.columns and "expected_hours" in df.columns:
-        # Opportunity cost = excess hours × average revenue per hour
-        excess_hours = np.maximum(0, df["labor_hours_billed"] - df["expected_hours"])
-        # Average revenue per hour (invoice total / labor hours)
-        avg_revenue_per_hour = df["invoice_total"] / df["labor_hours_billed"]
-        avg_revenue_per_hour = avg_revenue_per_hour.replace([np.inf, -np.inf], 0)
-        # Use shop average if individual calculation is unreasonable
-        shop_avg_revenue_per_hour = df["invoice_total"].sum() / df["labor_hours_billed"].sum()
-        avg_revenue_per_hour = avg_revenue_per_hour.fillna(shop_avg_revenue_per_hour)
-        
-        df["opportunity_cost_loss"] = excess_hours * avg_revenue_per_hour
-    else:
-        df["opportunity_cost_loss"] = 0
+    # OLD FINANCIAL CALCULATIONS (REPLACED BY DATA-DRIVEN MODEL)
+    # Keeping for reference but commented out to avoid conflicts
+    """
     
     # 4. Customer Satisfaction Impact (Future Revenue Loss)
     # Calculate potential future revenue loss due to poor service
@@ -368,11 +366,13 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80,
         "reputation_loss"
     ]
     
-    # Sum all loss components
-    df["total_comprehensive_loss"] = df[loss_components].sum(axis=1)
+    # Sum all loss components (OLD MODEL - REPLACED)
+    # df["total_comprehensive_loss"] = df[loss_components].sum(axis=1)
+    # df["estimated_loss"] = df["total_comprehensive_loss"]
+    """
     
-    # Keep the original estimated_loss for backward compatibility
-    df["estimated_loss"] = df["total_comprehensive_loss"]
+    # END OF OLD FINANCIAL MODEL - NOW USING DATA-DRIVEN MODEL
+    # The estimated_loss column is set by the enhanced financial model above
 
     # Prepare records for Supabase
     records = df.to_dict(orient="records")
@@ -557,7 +557,8 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80,
     
     print("\n=== Comprehensive Loss Analysis ===")
     
-    # Calculate total losses by category
+    # OLD LOSS CALCULATION (COMMENTED OUT - USING DATA-DRIVEN MODEL NOW)
+    """
     loss_components = [
         "labor_inefficiency_loss",
         "parts_waste_loss", 
@@ -571,21 +572,19 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80,
         "reputation_loss"
     ]
     
-    # Sum all loss components
     df["total_comprehensive_loss"] = df[loss_components].sum(axis=1)
-    
-    # Keep the original estimated_loss for backward compatibility
     df["estimated_loss"] = df["total_comprehensive_loss"]
+    """
     
-    # Loss by technician
+    # Loss by technician (using new data-driven model)
     if "technician" in df.columns:
-        tech_losses = df.groupby("technician")["total_comprehensive_loss"].sum().sort_values(ascending=False)
+        tech_losses = df.groupby("technician")["estimated_loss"].sum().sort_values(ascending=False)
         print(f"\nLoss by Technician:")
         for tech, loss in tech_losses.head(3).items():
             print(f"   • {tech}: ${loss:,.0f}")
     
-    # Loss by vehicle make
-    make_losses = df.groupby("make")["total_comprehensive_loss"].sum().sort_values(ascending=False)
+    # Loss by vehicle make (using new data-driven model)
+    make_losses = df.groupby("make")["estimated_loss"].sum().sort_values(ascending=False)
     print(f"\nLoss by Vehicle Make:")
     for make, loss in make_losses.head(3).items():
         print(f"   • {make}: ${loss:,.0f}")
@@ -596,30 +595,30 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80,
     
     recommendations = []
     
-    # Labor inefficiency recommendations
-    if "labor_inefficiency_loss" in df.columns and df["labor_inefficiency_loss"].sum() > 0:
-        top_inefficient_complaints = df[df["labor_inefficiency_loss"] > 0]["complaint"].value_counts().head(2)
+    # Data-driven recommendations based on actual patterns
+    if "significant_inefficiency" in df.columns:
+        top_inefficient_complaints = df[df["significant_inefficiency"] > 0]["complaint"].value_counts().head(2)
         for complaint, count in top_inefficient_complaints.items():
-            recommendations.append(f"• Train technicians on '{complaint}' procedures (${df[df['complaint'] == complaint]['labor_inefficiency_loss'].sum():,.0f} potential savings)")
+            complaint_loss = df[df['complaint'] == complaint]['estimated_loss'].sum()
+            recommendations.append(f"• Focus on '{complaint}' efficiency (${complaint_loss:,.0f} potential impact)")
     
-    # Parts waste recommendations
-    if "parts_waste_loss" in df.columns and df["parts_waste_loss"].sum() > 0:
-        recommendations.append(f"• Implement better diagnostic procedures to reduce parts waste (${df['parts_waste_loss'].sum():,.0f} potential savings)")
+    # Comeback-based recommendations
+    if "repeat_45d" in df.columns and df["repeat_45d"].sum() > 0:
+        comeback_loss = df[df["repeat_45d"] == 1]["estimated_loss"].sum()
+        recommendations.append(f"• Implement first-time fix protocols (${comeback_loss:,.0f} potential savings)")
     
-    # Customer satisfaction recommendations
-    if "customer_satisfaction_loss" in df.columns and df["customer_satisfaction_loss"].sum() > 0:
-        recommendations.append(f"• Improve first-time fix rate to retain customers (${df['customer_satisfaction_loss'].sum():,.0f} potential savings)")
+    # High-confidence improvement recommendations
+    if "data_confidence" in df.columns:
+        high_conf_high_loss = df[(df["data_confidence"] > 0.7) & (df["estimated_loss"] > df["estimated_loss"].quantile(0.8))]
+        if len(high_conf_high_loss) > 0:
+            recommendations.append(f"• Target {len(high_conf_high_loss)} high-confidence improvement opportunities (${high_conf_high_loss['estimated_loss'].sum():,.0f} potential)")
     
-    # Warranty recommendations
-    if "warranty_loss" in df.columns and df["warranty_loss"].sum() > 0:
-        recommendations.append(f"• Reduce misdiagnosis rate to avoid warranty costs (${df['warranty_loss'].sum():,.0f} potential savings)")
-    
-    # Print top 5 recommendations
+    # Print top recommendations
     for i, rec in enumerate(recommendations[:5], 1):
         print(f"{i}. {rec}")
     
-    # ROI calculation
-    total_potential_savings = df["total_comprehensive_loss"].sum()
+    # ROI calculation using data-driven totals
+    total_potential_savings = df["estimated_loss"].sum()
     print(f"\nROI Analysis:")
     print(f"   • Total comprehensive loss: ${total_potential_savings:,.0f}")
     print(f"   • Potential savings with 70% improvement: ${total_potential_savings * 0.7:,.0f}")
