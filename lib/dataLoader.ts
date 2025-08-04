@@ -1,14 +1,60 @@
-export async function loadTransformedData() {
+interface LoadDataOptions {
+  page?: number
+  limit?: number
+  dateRange?: string
+  technician?: string | null
+  make?: string | null
+  year?: string | null
+  complaint?: string | null
+  minLoss?: number
+  problemType?: string | null
+}
+
+interface PaginatedResponse {
+  data: any[]
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    totalPages: number
+  }
+}
+
+export async function loadTransformedData(options: LoadDataOptions = {}): Promise<PaginatedResponse> {
   try {
-    const response = await fetch('/api/transformed-data')
+    const params = new URLSearchParams()
+    
+    // Add pagination params
+    if (options.page) params.append('page', options.page.toString())
+    if (options.limit) params.append('limit', options.limit.toString())
+    
+    // Add filter params
+    if (options.dateRange) params.append('dateRange', options.dateRange)
+    if (options.technician) params.append('technician', options.technician)
+    if (options.make) params.append('make', options.make)
+    if (options.year) params.append('year', options.year)
+    if (options.complaint) params.append('complaint', options.complaint)
+    if (options.minLoss && options.minLoss > 0) params.append('minLoss', options.minLoss.toString())
+    if (options.problemType) params.append('problemType', options.problemType)
+
+    const url = `/api/transformed-data?${params.toString()}`
+    const response = await fetch(url)
+    
     if (!response.ok) {
       throw new Error('Failed to fetch data')
     }
+    
     return await response.json()
   } catch (error) {
     console.error('Error loading transformed data:', error)
     throw error
   }
+}
+
+// Legacy function for backward compatibility
+export async function loadAllTransformedData() {
+  const result = await loadTransformedData({ limit: 1000 })
+  return result.data
 }
 
 export function loadMetrics(data: any[]) {
