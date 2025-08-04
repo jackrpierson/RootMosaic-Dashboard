@@ -9,6 +9,7 @@ import TechnicianAnalysis from '@/components/TechnicianAnalysis'
 import SystemicIssues from '@/components/SystemicIssues'
 import FinancialCalculator from '@/components/FinancialCalculator'
 import PredictiveAnalytics from '@/components/PredictiveAnalytics'
+import ActionItems from '@/components/ActionItems'
 import { useTransformedData } from '@/lib/hooks/useTransformedData'
 
 export default function Dashboard() {
@@ -113,6 +114,8 @@ export default function Dashboard() {
             </div>
 
             <MetricsGrid data={filteredData} />
+
+            <ActionItems data={filteredData} />
 
             <AlertsSection data={filteredData} />
 
