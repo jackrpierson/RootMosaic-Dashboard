@@ -23,22 +23,33 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def load_service_data(shop_id=None, limit=None):
-    print("🔧 Loading raw service data from Supabase...")
-    query = supabase.table("service_data").select("*")
-    if shop_id:
-        query = query.eq("shop_id", shop_id)
-    if limit:
-        query = query.limit(limit)
-    response = query.execute()
-    if not response.data:
-        print("⚠️ No service data found in Supabase")
+def load_service_data(shop_id=None, limit=None, csv_path="data/service_data.csv"):
+    print(f"Loading raw service data from CSV: {csv_path}")
+    try:
+        df = pd.read_csv(csv_path)
+        print(f"SUCCESS: Loaded {len(df)} service records from CSV")
+        
+        # Apply shop_id filter if specified
+        if shop_id:
+            df = df[df["shop_id"] == shop_id]
+            print(f"Filtered to {len(df)} records for shop_id: {shop_id}")
+        
+        # Apply limit if specified
+        if limit:
+            df = df.head(limit)
+            print(f"Limited to {len(df)} records")
+            
+        if df.empty:
+            print("WARNING: No service data found in CSV after filtering")
+            return pd.DataFrame()
+            
+        return df
+        
+    except Exception as e:
+        print(f"ERROR: Could not load CSV file: {e}")
         return pd.DataFrame()
-    df = pd.DataFrame(response.data)
-    print(f"✅ Loaded {len(df)} service records from Supabase")
-    return df
 
-def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80):
+def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80, csv_path="data/service_data.csv"):
     """
     Build transformed service data with realistic calculations
     
@@ -46,10 +57,11 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80)
         shop_id: Specific shop ID to process
         batch_size: Number of records to process in each batch
         labor_rate: Hourly labor rate for loss calculations (default: $80/hour)
+        csv_path: Path to CSV file to read from (default: data/service_data.csv)
     """
-    df = load_service_data(shop_id or SHOP_ID)
+    df = load_service_data(shop_id or SHOP_ID, csv_path=csv_path)
     if df.empty:
-        print("❌ No data to process")
+        print("ERROR: No data to process")
         return
 
     # Ensure numeric columns
@@ -103,7 +115,7 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80)
         kmeans = KMeans(n_clusters=3, random_state=42, n_init="auto")
         df["cluster_id"] = kmeans.fit_predict(df[["efficiency_loss", "complaint_similarity"]])
     except Exception as e:
-        print(f"⚠️ Clustering failed ({e}), defaulting cluster_id=0.")
+        print(f"WARNING: Clustering failed ({e}), defaulting cluster_id=0.")
         df["cluster_id"] = 0
 
     # Enhanced Feature Engineering for More Powerful Insights
@@ -365,12 +377,14 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80)
     # Prepare records for Supabase
     records = df.to_dict(orient="records")
     
-    # Filter columns to only include those in the database schema
+    # Filter columns to only include those that exist in both CSV and should be in transformed table
+    # Based on the check_nulls.py output, these are the columns that exist in the table:
     schema_columns = [
         'vin', 'service_date', 'invoice_total', 'labor_hours_billed', 'odometer_reading',
-        'make', 'model', 'year', 'complaint', 'efficiency_deviation', 'efficiency_loss',
-        'estimated_loss', 'repeat_45d', 'complaint_similarity', 'cluster_id',
-        'suspected_misdiagnosis', 'shop_id'
+        'make', 'model', 'year', 'complaint', 'customer_name', 'customer_contact',
+        'diagnosis', 'recommended', 'parts_used', 'technician',
+        'efficiency_deviation', 'efficiency_loss', 'estimated_loss', 'repeat_45d', 
+        'complaint_similarity', 'cluster_id', 'suspected_misdiagnosis', 'shop_id'
     ]
     
     # Filter records to only include schema columns
@@ -425,13 +439,13 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80)
             "high_risk": "sum"
         }).round(2)
         
-        print("\n🔧 Technician Performance Analysis:")
+        print("\nTechnician Performance Analysis:")
         print(tech_performance.sort_values("misdiagnosis_probability", ascending=False))
         
         # Identify technicians needing training
         techs_needing_training = tech_performance[tech_performance["misdiagnosis_probability"] > 0.3]
         if not techs_needing_training.empty:
-            print(f"\n⚠️ Technicians Needing Training: {len(techs_needing_training)}")
+            print(f"\nWARNING: Technicians Needing Training: {len(techs_needing_training)}")
             for tech in techs_needing_training.index:
                 print(f"  • {tech}: {techs_needing_training.loc[tech, 'misdiagnosis_probability']:.2f} misdiagnosis rate")
     
@@ -443,7 +457,7 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80)
         "vehicle_complexity_score": "first"
     }).round(3)
     
-    print("\n🚗 Vehicle-Specific Insights:")
+    print("\nVehicle-Specific Insights:")
     problematic_vehicles = vehicle_insights[vehicle_insights["misdiagnosis_probability"] > 0.3]
     if not problematic_vehicles.empty:
         print("Problematic Vehicle Makes/Models:")
@@ -456,7 +470,7 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80)
             "tech_vs_expected_pct": "mean"
         }).round(3)
         
-        print("\n📅 Temporal Patterns:")
+        print("\nTemporal Patterns:")
         print("Day of Week Performance:")
         days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         for i, day in enumerate(days):
@@ -470,14 +484,14 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80)
         "repeat_45d": "sum"
     }).round(3)
     
-    print("\n⚠️ Risk Analysis:")
+    print("\nRisk Analysis:")
     print("Risk Score vs Performance:")
     print(risk_analysis)
     
     # 5. Predictive Insights
     high_risk_jobs = df[df["high_risk"] == 1]
     if not high_risk_jobs.empty:
-        print(f"\n🎯 High-Risk Jobs Identified: {len(high_risk_jobs)}")
+        print(f"\nHigh-Risk Jobs Identified: {len(high_risk_jobs)}")
         print("Common characteristics of high-risk jobs:")
         
         # Most common complaints in high-risk jobs
@@ -493,7 +507,7 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80)
             print(f"    - {make}: {count} cases")
     
     # 6. Actionable Recommendations
-    print("\n💡 Actionable Recommendations:")
+    print("\nActionable Recommendations:")
     
     # Technician recommendations
     if "technician" in df.columns and not techs_needing_training.empty:
@@ -522,7 +536,7 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80)
     print(f"  • FINANCIAL: High-risk jobs cost ${total_high_risk_loss:,.0f} in estimated losses")
     
     # Priority actions
-    print("\n🎯 Priority Actions (by impact):")
+    print("\nPriority Actions (by impact):")
     actions = []
     
     if "technician" in df.columns and not techs_needing_training.empty:
@@ -577,7 +591,7 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80)
         print(f"   • {make}: ${loss:,.0f}")
     
     # Actionable recommendations based on loss analysis
-    print(f"\n💡 Actionable Recommendations Based on Loss Analysis:")
+    print(f"\nActionable Recommendations Based on Loss Analysis:")
     print("=" * 60)
     
     recommendations = []
@@ -606,20 +620,20 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80)
     
     # ROI calculation
     total_potential_savings = df["total_comprehensive_loss"].sum()
-    print(f"\n📈 ROI Analysis:")
+    print(f"\nROI Analysis:")
     print(f"   • Total comprehensive loss: ${total_potential_savings:,.0f}")
     print(f"   • Potential savings with 70% improvement: ${total_potential_savings * 0.7:,.0f}")
     print(f"   • Investment needed for improvement: ${total_potential_savings * 0.1:,.0f} (10% of losses)")
     print(f"   • Net ROI: {((total_potential_savings * 0.7) / (total_potential_savings * 0.1) - 1) * 100:.0f}%")
 
 def save_transformed_data(records, shop_id, batch_size):
-    print(f"🔧 Saving {len(records)} transformed records to Supabase...")
+    print(f"Saving {len(records)} transformed records to Supabase...")
 
     try:
         supabase.table("transformed_service_data").delete().eq("shop_id", shop_id).execute()
-        print(f"🧹 Cleared existing transformed data")
+        print(f"Cleared existing transformed data")
     except Exception as e:
-        print(f"⚠️ Could not clear existing data: {e}")
+        print(f"WARNING: Could not clear existing data: {e}")
 
     total_inserted = 0
     for i in range(0, len(records), batch_size):
@@ -627,11 +641,11 @@ def save_transformed_data(records, shop_id, batch_size):
         try:
             supabase.table("transformed_service_data").insert(batch).execute()
             total_inserted += len(batch)
-            print(f"✅ Inserted batch {i//batch_size + 1}: {len(batch)} records")
+            print(f"SUCCESS: Inserted batch {i//batch_size + 1}: {len(batch)} records")
         except Exception as e:
-            print(f"❌ Error inserting batch {i//batch_size + 1}: {e}")
+            print(f"ERROR: Error inserting batch {i//batch_size + 1}: {e}")
 
-    print(f"✅ Total records saved: {total_inserted}/{len(records)}")
+    print(f"SUCCESS: Total records saved: {total_inserted}/{len(records)}")
 
 if __name__ == "__main__":
     import argparse
@@ -639,11 +653,12 @@ if __name__ == "__main__":
     parser.add_argument("--shop-id", help="Specific shop ID to process")
     parser.add_argument("--batch-size", type=int, default=1000)
     parser.add_argument("--labor-rate", type=float, default=80.0, help="Hourly labor rate for calculations")
+    parser.add_argument("--csv-path", default="data/service_data.csv", help="Path to CSV file to read from")
     parser.add_argument("--clear", action="store_true")
     args = parser.parse_args()
 
     if args.clear:
         supabase.table("transformed_service_data").delete().execute()
-        print("✅ Cleared transformed data for ALL shops")
+        print("SUCCESS: Cleared transformed data for ALL shops")
 
-    build_transformed_service_data(args.shop_id, args.batch_size, args.labor_rate)
+    build_transformed_service_data(args.shop_id, args.batch_size, args.labor_rate, args.csv_path)

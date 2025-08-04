@@ -24,7 +24,7 @@ export default function Dashboard() {
   })
 
   // For getting filter options, we need to load all data once
-  const { data: allData, isLoading: allDataLoading } = useTransformedData({ limit: 1000 })
+  const { data: allData, isLoading: allDataLoading } = useTransformedData({ limit: 10000 })
   
   // For the actual filtered data, use server-side filtering
   const { data: filteredData, isLoading, error, totalRecords } = useTransformedData({
@@ -35,7 +35,7 @@ export default function Dashboard() {
     complaint: filters.complaint,
     minLoss: filters.minLoss,
     problemType: filters.problemType,
-    limit: 1000 // Load more data for comprehensive analysis
+    limit: 10000 // Load all data for comprehensive analysis
   })
 
   // Memoize the loading state to avoid unnecessary re-renders

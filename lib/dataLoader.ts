@@ -53,7 +53,7 @@ export async function loadTransformedData(options: LoadDataOptions = {}): Promis
 
 // Legacy function for backward compatibility
 export async function loadAllTransformedData() {
-  const result = await loadTransformedData({ limit: 1000 })
+  const result = await loadTransformedData({ limit: 10000 })
   return result.data
 }
 

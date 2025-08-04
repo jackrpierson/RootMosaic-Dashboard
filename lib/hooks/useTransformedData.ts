@@ -58,5 +58,5 @@ export function useTransformedData(options: LoadDataOptions = {}) {
 
 // Hook for loading all data (backward compatibility)
 export function useAllTransformedData() {
-  return useTransformedData({ limit: 1000 })
+  return useTransformedData({ limit: 10000 })
 }

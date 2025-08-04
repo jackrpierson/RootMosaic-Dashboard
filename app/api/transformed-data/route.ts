@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     
     // Pagination parameters
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '100')
+    const limit = parseInt(searchParams.get('limit') || '10000')
     const offset = (page - 1) * limit
 
     // Filter parameters
@@ -102,10 +102,13 @@ export async function GET(request: Request) {
       }
     }
 
-    // Apply pagination and ordering
-    query = query
-      .order('service_date', { ascending: false })
-      .range(offset, offset + limit - 1)
+    // Apply ordering
+    query = query.order('service_date', { ascending: false })
+    
+    // Only apply pagination if limit is reasonable (not showing all records)
+    if (limit < 10000) {
+      query = query.range(offset, offset + limit - 1)
+    }
 
     const { data, error, count } = await query
 
