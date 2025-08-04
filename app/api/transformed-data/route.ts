@@ -113,7 +113,7 @@ export async function GET(request: Request) {
       const batchSize = 1000
       
       while (true) {
-        const batchQuery = supabase
+        let batchQuery = supabase
           .from('transformed_service_data')
           .select('*')
           .range(batchOffset, batchOffset + batchSize - 1)
