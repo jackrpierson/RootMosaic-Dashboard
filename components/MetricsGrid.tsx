@@ -24,7 +24,7 @@ function MetricCard({ title, value, subtitle, icon, color, progress, trend, form
   const formatValue = () => {
     switch (format) {
       case 'currency':
-        return <NumberFormatter value={value} prefix="$" thousandSeparator />
+        return <NumberFormatter value={value} prefix="$" thousandSeparator decimalScale={2} fixedDecimalScale />
       case 'percentage':
         return `${value.toFixed(1)}%`
       default:
@@ -206,7 +206,7 @@ export default function MetricsGrid({ data }: MetricsGridProps) {
             <div>
               <Text size="sm" c="dimmed" fw={600}>Revenue per Hour</Text>
               <Text size="lg" fw={700} c="green">
-                <NumberFormatter value={metrics.revenuePerHour} prefix="$" decimalScale={0} />
+                <NumberFormatter value={metrics.revenuePerHour} prefix="$" decimalScale={2} fixedDecimalScale thousandSeparator />
               </Text>
             </div>
             <ThemeIcon variant="light" color="green" size="lg">
