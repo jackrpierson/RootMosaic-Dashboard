@@ -171,66 +171,202 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How RootMosaic Solves It */}
-      <section id="features" className="py-20 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              How RootMosaic Solves It
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              AI-powered insights that find the real problems hiding in your service records.
-            </p>
-          </div>
+             {/* How RootMosaic Solves It */}
+       <section id="features" className="py-20 px-4">
+         <div className="container mx-auto">
+           <div className="text-center mb-16">
+             <h2 className="text-4xl font-bold text-gray-900 mb-4">
+               How RootMosaic Solves It
+             </h2>
+             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+               AI-powered insights that find the real problems hiding in your service records.
+             </p>
+           </div>
 
-          <div className="grid md:grid-cols-3 gap-12">
-            {/* Feature 1 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Systemic Issue Detection
-              </h3>
-              <p className="text-gray-600">
-                AI finds patterns in your service records that cause repeated losses.
-              </p>
-            </div>
+           {/* Visual Process Flow */}
+           <div className="mb-16">
+             <div className="flex items-center justify-center space-x-4 mb-8">
+               <div className="flex items-center">
+                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                   <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+                 <span className="ml-3 text-sm font-medium text-gray-600">Service Records</span>
+               </div>
+               <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+               </svg>
+               <div className="flex items-center">
+                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                   <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+                 <span className="ml-3 text-sm font-medium text-gray-600">AI Analysis</span>
+               </div>
+               <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+               </svg>
+               <div className="flex items-center">
+                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                   <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+                 <span className="ml-3 text-sm font-medium text-gray-600">Actionable Insights</span>
+               </div>
+             </div>
+           </div>
 
-            {/* Feature 2 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Smart Vehicle Summaries
-              </h3>
-              <p className="text-gray-600">
-                See real-time complaint and recall data tied to the VIN.
-              </p>
-            </div>
+           <div className="grid md:grid-cols-3 gap-12">
+             {/* Feature 1 */}
+             <div className="text-center">
+               <div className="relative mb-6">
+                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mx-auto shadow-lg">
+                   <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+                 {/* Visual Pattern */}
+                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                   <span className="text-white text-xs font-bold">!</span>
+                 </div>
+               </div>
+               <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                 Systemic Issue Detection
+               </h3>
+               <p className="text-gray-600 mb-4">
+                 AI finds patterns in your service records that cause repeated losses.
+               </p>
+               {/* Visual Example */}
+               <div className="bg-gray-50 rounded-lg p-4 text-left">
+                 <div className="flex items-center space-x-2 mb-2">
+                   <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                   <span className="text-sm font-medium text-gray-700">Pattern Detected</span>
+                 </div>
+                 <div className="text-xs text-gray-600">
+                   Honda CR-V AC failures: 12 cases → $8,400 potential savings
+                 </div>
+               </div>
+             </div>
 
-            {/* Feature 3 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Corrective Action Plans
-              </h3>
-              <p className="text-gray-600">
-                Get step-by-step recommendations to fix the root cause — not just the symptom.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+             {/* Feature 2 */}
+             <div className="text-center">
+               <div className="relative mb-6">
+                 <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto shadow-lg">
+                   <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+                 {/* Visual Data Flow */}
+                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                   <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+               </div>
+               <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                 Smart Vehicle Summaries
+               </h3>
+               <p className="text-gray-600 mb-4">
+                 See real-time complaint and recall data tied to the VIN.
+               </p>
+               {/* Visual Example */}
+               <div className="bg-gray-50 rounded-lg p-4 text-left">
+                 <div className="flex items-center space-x-2 mb-2">
+                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                   <span className="text-sm font-medium text-gray-700">VIN Analysis</span>
+                 </div>
+                 <div className="text-xs text-gray-600">
+                   JHMCR2F8XEC123456 → Known AC issues + 2 recalls
+                 </div>
+               </div>
+             </div>
+
+             {/* Feature 3 */}
+             <div className="text-center">
+               <div className="relative mb-6">
+                 <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mx-auto shadow-lg">
+                   <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+                 {/* Visual Action Steps */}
+                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                   <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+               </div>
+               <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                 Corrective Action Plans
+               </h3>
+               <p className="text-gray-600 mb-4">
+                 Get step-by-step recommendations to fix the root cause — not just the symptom.
+               </p>
+               {/* Visual Example */}
+               <div className="bg-gray-50 rounded-lg p-4 text-left">
+                 <div className="flex items-center space-x-2 mb-2">
+                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                   <span className="text-sm font-medium text-gray-700">Action Plan</span>
+                 </div>
+                 <div className="text-xs text-gray-600">
+                   1. Check condenser 2. Replace compressor 3. Update procedure
+                 </div>
+               </div>
+             </div>
+           </div>
+
+           {/* Visual Cycle */}
+           <div className="mt-16 text-center">
+             <h3 className="text-2xl font-bold text-gray-900 mb-8">Continuous Improvement Cycle</h3>
+             <div className="flex items-center justify-center space-x-8">
+               <div className="flex flex-col items-center">
+                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-2">
+                   <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+                 <span className="text-sm font-medium text-gray-700">Detect</span>
+               </div>
+               <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+               </svg>
+               <div className="flex flex-col items-center">
+                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-2">
+                   <svg className="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+                 <span className="text-sm font-medium text-gray-700">Analyze</span>
+               </div>
+               <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+               </svg>
+               <div className="flex flex-col items-center">
+                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-2">
+                   <svg className="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+                 <span className="text-sm font-medium text-gray-700">Act</span>
+               </div>
+               <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+               </svg>
+               <div className="flex flex-col items-center">
+                 <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-2">
+                   <svg className="w-8 h-8 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+                 <span className="text-sm font-medium text-gray-700">Monitor</span>
+               </div>
+             </div>
+           </div>
+         </div>
+       </section>
 
       {/* Sign In Modal */}
       {isSignInOpen && (
