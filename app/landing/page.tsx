@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 export default function LandingPage() {
@@ -13,6 +13,36 @@ export default function LandingPage() {
     // For now, redirect to analytics dashboard - in production this would validate credentials
     window.location.href = '/analytics'
   }
+
+  // Video cycling functionality
+  useEffect(() => {
+    const videos = [
+      '/videos/251667_Automobile Car Engineering Mechanic_By_Thomas_Gellert_Artlist_HD.mp4',
+      '/videos/54072_Mechanic working on engine in garage_By_Ami_Bornstein_Artlist_HD.mp4',
+      '/videos/6266834_Mechanic Repair Car Garage_By_Felbaba_Volodymyr_Artlist_HD.mp4'
+    ]
+    
+    let currentVideoIndex = 0
+    const videoElement = document.getElementById('heroVideo') as HTMLVideoElement
+    
+    if (videoElement) {
+      const cycleVideos = () => {
+        currentVideoIndex = (currentVideoIndex + 1) % videos.length
+        videoElement.src = videos[currentVideoIndex]
+        videoElement.load()
+        videoElement.play()
+      }
+      
+      // Set initial video
+      videoElement.src = videos[0]
+      
+      // Set up interval to cycle videos every 5 seconds
+      const interval = setInterval(cycleVideos, 5000)
+      
+      // Cleanup interval on component unmount
+      return () => clearInterval(interval)
+    }
+  }, [])
 
   return (
     <div className="min-h-screen bg-white">
@@ -27,20 +57,7 @@ export default function LandingPage() {
               <span className="text-xl font-bold text-gray-900">ROOTMOSAIC</span>
             </div>
             
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Features
-              </Link>
-              <Link href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Pricing
-              </Link>
-              <Link href="#demo" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Demo
-              </Link>
-              <Link href="#contact" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Contact
-              </Link>
-            </nav>
+            
 
             <div className="flex items-center space-x-4">
               <button 
@@ -54,68 +71,83 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
-                Stop Repeat Repairs.<br />
-                <span className="text-blue-600">Unlock Hidden Profit</span><br />
-                in Your Shop.
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                RootMosaic uses AI to uncover the real causes of comebacks and inefficiencies — so you keep customers happy and profits strong.
-              </p>
-              
-              {/* Key Statistic */}
-              <div className="bg-gradient-to-r from-red-500 to-blue-500 rounded-lg p-6 mb-8 inline-block">
-                <div className="text-3xl font-bold text-white">
-                  $47,892 average savings per shop
-                </div>
-                <div className="text-white/80 text-sm mt-1">From reduced comebacks and improved efficiency</div>
-              </div>
+             {/* Hero Section with Video Background */}
+       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+         {/* Video Background */}
+         <div className="absolute inset-0 w-full h-full">
+           <video
+             id="heroVideo"
+             className="w-full h-full object-cover"
+             autoPlay
+             muted
+             playsInline
+           >
+           </video>
+           {/* Dark overlay for better text readability */}
+           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+         </div>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button 
-                  onClick={() => setIsSignInOpen(true)}
-                  className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-blue-700 transition-colors"
-                >
-                  See RootMosaic in Action
-                </button>
-                <button className="border border-gray-300 text-gray-700 px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-50 transition-colors">
-                  Request a Demo
-                </button>
-              </div>
-            </div>
-            
-            {/* Dashboard Preview */}
-            <div className="relative">
-              <div className="bg-gray-900 rounded-lg p-4 shadow-2xl">
-                <div className="bg-gray-800 rounded-lg p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-white font-semibold">Systemic Issue Detected</h3>
-                    <span className="bg-red-500 text-white px-2 py-1 rounded text-sm">High Priority</span>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="bg-gray-700 rounded p-3">
-                      <div className="text-red-400 font-medium">2018-2020 Honda CR-V</div>
-                      <div className="text-gray-300 text-sm">AC Compressor failures: 12 cases in 3 months</div>
-                      <div className="text-green-400 text-sm">Potential savings: $8,400</div>
-                    </div>
-                    <div className="bg-gray-700 rounded p-3">
-                      <div className="text-orange-400 font-medium">Technician Efficiency Alert</div>
-                      <div className="text-gray-300 text-sm">Mike S. taking 40% longer on brake jobs</div>
-                      <div className="text-green-400 text-sm">Training opportunity identified</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+         {/* Content Overlay */}
+         <div className="relative z-10 container mx-auto px-4 py-20">
+           <div className="grid lg:grid-cols-2 gap-12 items-center">
+             <div className="text-white">
+               <h1 className="text-5xl font-bold mb-6 leading-tight">
+                 Stop Repeat Repairs.<br />
+                 <span className="text-blue-400">Unlock Hidden Profit</span><br />
+                 in Your Shop.
+               </h1>
+               <p className="text-xl text-gray-200 mb-8 leading-relaxed">
+                 RootMosaic uses AI to uncover the real causes of comebacks and inefficiencies — so you keep customers happy and profits strong.
+               </p>
+               
+               {/* Key Statistic */}
+               <div className="bg-gradient-to-r from-red-500 to-blue-500 rounded-lg p-6 mb-8 inline-block">
+                 <div className="text-3xl font-bold text-white">
+                   $47,892 average savings per shop
+                 </div>
+                 <div className="text-white/80 text-sm mt-1">From reduced comebacks and improved efficiency</div>
+               </div>
+
+               {/* CTA Buttons */}
+               <div className="flex flex-col sm:flex-row gap-4">
+                 <button 
+                   onClick={() => setIsSignInOpen(true)}
+                   className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-blue-700 transition-colors shadow-lg"
+                 >
+                   See RootMosaic in Action
+                 </button>
+                 <button className="bg-white text-gray-800 px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-100 transition-colors shadow-lg">
+                   Request a Demo
+                 </button>
+               </div>
+             </div>
+             
+             {/* Dashboard Preview */}
+             <div className="relative">
+               <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg p-4 shadow-2xl border border-white/10">
+                 <div className="bg-gray-800/80 rounded-lg p-6">
+                   <div className="flex items-center justify-between mb-4">
+                     <h3 className="text-white font-semibold">Systemic Issue Detected</h3>
+                     <span className="bg-red-500 text-white px-2 py-1 rounded text-sm">High Priority</span>
+                   </div>
+                   <div className="space-y-3">
+                     <div className="bg-gray-700/80 rounded p-3">
+                       <div className="text-red-400 font-medium">2018-2020 Honda CR-V</div>
+                       <div className="text-gray-300 text-sm">AC Compressor failures: 12 cases in 3 months</div>
+                       <div className="text-green-400 text-sm">Potential savings: $8,400</div>
+                     </div>
+                     <div className="bg-gray-700/80 rounded p-3">
+                       <div className="text-orange-400 font-medium">Technician Efficiency Alert</div>
+                       <div className="text-gray-300 text-sm">Mike S. taking 40% longer on brake jobs</div>
+                       <div className="text-green-400 text-sm">Training opportunity identified</div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+       </section>
 
       {/* Problem / Pain Point Section */}
       <section className="py-20 px-4 bg-red-50">
