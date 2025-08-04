@@ -262,7 +262,7 @@ def build_transformed_service_data(shop_id=None, batch_size=1000, labor_rate=80,
     # Store savings analysis for reporting
     print(f"\n=== SAVINGS ANALYSIS SUMMARY ===")
     print(f"Conservative Savings Potential: ${savings_analysis['conservative_savings']:,.0f}")
-    print(f"Hour Savings Potential: {savings_analysis['hour_savings_potential']:.1f} hours")
+    print(f"Process Improvement Focus: System-wide standardization and quality improvements")
     print(f"Comeback Improvement Potential: {savings_analysis['comeback_improvement_potential']:.1%}")
     
     # Legacy calculations for backward compatibility (replaced by data-driven model above)

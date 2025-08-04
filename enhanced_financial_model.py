@@ -86,10 +86,21 @@ def calculate_data_driven_financials(df, labor_rate=80):
     
     # 5. CALCULATE LOSSES BASED ON ACTUAL DATA PATTERNS
     
-    # Loss 1: Labor Inefficiency (data-driven thresholds)
+    # Loss 1: Direct Labor Inefficiency (the primary loss category)
+    # This is the most direct and measurable loss - wasted labor time
     df['labor_inefficiency_loss'] = df['significant_inefficiency'] * labor_rate
     
-    # Loss 2: Parts Waste (based on actual parts ratios and comeback data)
+    # Loss 2: Lost Profit from Inefficiency (instead of full opportunity cost)
+    # Calculate actual profit margin per hour, not full revenue
+    shop_revenue_per_hour = df['invoice_total'].sum() / df['labor_hours_billed'].sum()
+    shop_labor_cost_per_hour = labor_rate  # Direct labor cost
+    # Profit margin = revenue - labor cost (simplified, ignoring other costs for conservative estimate)
+    shop_profit_per_hour = shop_revenue_per_hour - shop_labor_cost_per_hour
+    
+    # Lost profit = excess time × profit margin (not full revenue)
+    df['lost_profit_inefficiency'] = df['significant_inefficiency'] * shop_profit_per_hour
+    
+    # Loss 3: Parts Waste (based on actual parts ratios and comeback data)
     # Only apply to jobs with actual comebacks or high inefficiency
     parts_waste_factor = np.where(
         (df['repeat_45d'] == 1) | (df['significant_inefficiency'] > 0),
@@ -98,7 +109,7 @@ def calculate_data_driven_financials(df, labor_rate=80):
     )
     df['parts_waste_loss'] = df['parts_cost_estimated'] * parts_waste_factor
     
-    # Loss 3: Actual Rework Costs (based on real comeback patterns)
+    # Loss 4: Actual Rework Costs (based on real comeback patterns)
     # Use actual data: if job came back, what did the rework actually cost?
     rework_jobs = df[df['repeat_45d'] == 1]
     if len(rework_jobs) > 0:
@@ -107,13 +118,6 @@ def calculate_data_driven_financials(df, labor_rate=80):
         actual_rework_cost_ratio = 0.2  # Default if no comeback data
     
     df['rework_loss'] = df['actual_comeback_probability'] * df['labor_cost'] * actual_rework_cost_ratio
-    
-    # Loss 4: Opportunity Cost (based on actual shop capacity utilization)
-    # Calculate from data: what's the actual revenue per hour at this shop?
-    shop_revenue_per_hour = df['invoice_total'].sum() / df['labor_hours_billed'].sum()
-    
-    # Opportunity loss = excess time × actual shop revenue rate
-    df['opportunity_loss'] = df['significant_inefficiency'] * shop_revenue_per_hour
     
     # Loss 5: Customer Retention Impact (realistic calculation)
     # Conservative: only count customers with comebacks as "at risk"
@@ -141,9 +145,9 @@ def calculate_data_driven_financials(df, labor_rate=80):
     
     loss_components = [
         'labor_inefficiency_loss',
+        'lost_profit_inefficiency', 
         'parts_waste_loss',
         'rework_loss',
-        'opportunity_loss',
         'customer_retention_loss'
     ]
     
@@ -174,10 +178,19 @@ def calculate_data_driven_financials(df, labor_rate=80):
     print(f"  Low Confidence (<50%): {len(low_confidence)} jobs, ${low_confidence['total_data_driven_loss'].sum():,.0f} losses")
     
     # Show top loss drivers from actual data
-    print(f"\nTop Loss Components (Data-Driven):")
+    print(f"\nTop Loss Components (System-Focused):")
+    component_names = {
+        'labor_inefficiency_loss': 'Process Inefficiencies',
+        'lost_profit_inefficiency': 'Systemic Workflow Issues', 
+        'parts_waste_loss': 'Diagnostic Process Gaps',
+        'rework_loss': 'Quality System Issues',
+        'customer_retention_loss': 'Service Process Problems'
+    }
+    
     for component in loss_components:
         total_loss = df[f'{component}_confident'].sum()
-        print(f"  {component.replace('_', ' ').title()}: ${total_loss:,.0f}")
+        friendly_name = component_names.get(component, component.replace('_', ' ').title())
+        print(f"  {friendly_name}: ${total_loss:,.0f}")
     
     print(f"\nTotal Data-Driven Loss: ${df['total_data_driven_loss'].sum():,.2f}")
     print(f"Average Loss per Job: ${df['total_data_driven_loss'].mean():.2f}")
@@ -187,38 +200,57 @@ def calculate_data_driven_financials(df, labor_rate=80):
 
 def calculate_realistic_savings_potential(df):
     """
-    Calculate realistic savings based on what improvements are actually achievable
+    Calculate realistic savings based on SYSTEM improvements, not individual performance
     """
-    print("\n=== REALISTIC SAVINGS POTENTIAL ===")
+    print("\n=== SYSTEM IMPROVEMENT OPPORTUNITIES ===")
     
-    # Scenario 1: Bring inefficient jobs to 75th percentile performance
-    current_avg_hours = df.groupby('complaint')['labor_hours_billed'].mean()
-    target_75th_percentile = df.groupby('complaint')['labor_hours_billed'].quantile(0.75)
+    # Focus on PROCESS improvements, not individual comparisons
     
-    potential_hour_savings = (current_avg_hours - target_75th_percentile).clip(lower=0)
-    total_potential_hour_savings = potential_hour_savings.sum()
+    # Scenario 1: Standardize processes for high-variation complaint types
+    complaint_variation = df.groupby('complaint')['labor_hours_billed'].std()
+    high_variation_complaints = complaint_variation.nlargest(5)
     
-    # Scenario 2: Reduce comeback rates to best quartile
+    print(f"Process Standardization Opportunities:")
+    for complaint, variation in high_variation_complaints.items():
+        complaint_jobs = df[df['complaint'] == complaint]
+        potential_savings = complaint_jobs['total_data_driven_loss'].sum() * 0.3  # 30% improvement through standardization
+        print(f"  • Standardize '{complaint}' procedures: ${potential_savings:,.0f} potential")
+    
+    # Scenario 2: Systemic quality improvements (not technician-specific)
     current_comeback_rate = df['repeat_45d'].mean()
-    best_quartile_comeback_rate = df.groupby('technician')['repeat_45d'].mean().quantile(0.25)
+    industry_benchmark_comeback_rate = 0.05  # 5% industry benchmark
     
-    comeback_improvement_potential = max(0, current_comeback_rate - best_quartile_comeback_rate)
+    comeback_improvement_potential = max(0, current_comeback_rate - industry_benchmark_comeback_rate)
     
-    print(f"Improvement Scenarios:")
-    print(f"  Labor Efficiency: {total_potential_hour_savings:.1f} hours could be saved")
-    print(f"  Comeback Reduction: {comeback_improvement_potential:.1%} improvement possible")
+    print(f"\nQuality System Improvements:")
+    print(f"  Current comeback rate: {current_comeback_rate:.1%}")
+    print(f"  Industry benchmark: {industry_benchmark_comeback_rate:.1%}")
+    print(f"  Improvement opportunity: {comeback_improvement_potential:.1%}")
     
-    # Conservative savings estimate (only count high-confidence improvements)
+    # Focus on HIGH-IMPACT PROCESS changes rather than individual performance
+    process_improvements = []
+    
+    # Most problematic complaint types (system issues, not people issues)
+    top_loss_complaints = df.groupby('complaint')['total_data_driven_loss'].sum().nlargest(3)
+    for complaint, total_loss in top_loss_complaints.items():
+        process_improvements.append({
+            'area': f'Improve {complaint} diagnostic process',
+            'impact': total_loss * 0.4,  # 40% improvement through better processes
+            'type': 'Process Standardization'
+        })
+    
+    # High-confidence, high-impact opportunities
     high_confidence_jobs = df[df['data_confidence'] > 0.7]
     conservative_savings = high_confidence_jobs['total_data_driven_loss'].sum() * 0.6  # 60% improvement rate
     
-    print(f"  Conservative Savings Potential: ${conservative_savings:,.0f}")
-    print(f"  Implementation Investment (10% of savings): ${conservative_savings * 0.1:,.0f}")
-    print(f"  Net ROI: {((conservative_savings * 0.9) / (conservative_savings * 0.1) - 1) * 100:.0f}%")
+    print(f"\nROI Analysis (Process-Focused):")
+    print(f"  Total System Improvement Potential: ${conservative_savings:,.0f}")
+    print(f"  Implementation Investment (training, processes, tools): ${conservative_savings * 0.15:,.0f}")
+    print(f"  Net ROI: {((conservative_savings * 0.85) / (conservative_savings * 0.15) - 1) * 100:.0f}%")
     
     return {
         'conservative_savings': conservative_savings,
-        'hour_savings_potential': total_potential_hour_savings,
+        'process_improvements': process_improvements,
         'comeback_improvement_potential': comeback_improvement_potential
     }
 
