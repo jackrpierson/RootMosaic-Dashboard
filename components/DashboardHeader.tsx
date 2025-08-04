@@ -1,5 +1,4 @@
-import { Container, Group, Text, Badge, Button, Menu, Avatar, ActionIcon } from '@mantine/core';
-import { IconSettings, IconBell, IconChevronDown, IconDashboard, IconReportAnalytics, IconUser } from '@tabler/icons-react';
+import Link from 'next/link';
 
 export default function DashboardHeader() {
   return (
@@ -16,6 +15,15 @@ export default function DashboardHeader() {
                 AI-Powered Process Analytics & Optimization
               </p>
             </div>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <Link 
+              href="/landing" 
+              className="text-gray-400 hover:text-white transition-colors text-sm"
+            >
+              ← Back to Landing
+            </Link>
           </div>
           
           <div className="flex items-center space-x-4">
