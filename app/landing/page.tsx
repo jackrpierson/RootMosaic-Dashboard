@@ -24,25 +24,39 @@ export default function LandingPage() {
       '/videos/54072_Mechanic working on engine in garage_By_Ami_Bornstein_Artlist_HD.mp4'
     ]
     
+    console.log('Setting up video cycling with', videos.length, 'videos')
+    
     let currentVideoIndex = 0
     const videoElement = document.getElementById('heroVideo') as HTMLVideoElement
+    
+    console.log('Video element found:', !!videoElement)
     
     if (videoElement) {
       const cycleVideos = () => {
         currentVideoIndex = (currentVideoIndex + 1) % videos.length
+        console.log('Cycling to video', currentVideoIndex, videos[currentVideoIndex])
         videoElement.src = videos[currentVideoIndex]
         videoElement.load()
-        videoElement.play()
+        videoElement.play().catch(error => {
+          console.log('Video play failed:', error)
+        })
       }
       
       // Set initial video
+      console.log('Setting initial video:', videos[0])
       videoElement.src = videos[0]
+      videoElement.load()
+      videoElement.play().catch(error => {
+        console.log('Initial video play failed:', error)
+      })
       
       // Set up interval to cycle videos every 4 seconds
       const interval = setInterval(cycleVideos, 4000)
       
       // Cleanup interval on component unmount
       return () => clearInterval(interval)
+    } else {
+      console.log('Video element not found!')
     }
   }, [])
 
@@ -57,7 +71,9 @@ export default function LandingPage() {
           muted
           playsInline
           loop
+          src="/videos/614440_Doctor Tablet Kid Patient_By_Pressmaster_Artlist_HD.mp4"
         >
+          Your browser does not support the video tag.
         </video>
         {/* Dark overlay for better text readability */}
         <div className="absolute inset-0 bg-black bg-opacity-60"></div>
