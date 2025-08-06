@@ -24,26 +24,30 @@ export default function LandingPage() {
       '/videos/54072_Mechanic working on engine in garage_By_Ami_Bornstein_Artlist_HD.mp4'
     ]
     
-    console.log('Setting up video cycling with', videos.length, 'videos')
-    
     let currentVideoIndex = 0
     const videoElement = document.getElementById('heroVideo') as HTMLVideoElement
-    
-    console.log('Video element found:', !!videoElement)
     
     if (videoElement) {
       const cycleVideos = () => {
         currentVideoIndex = (currentVideoIndex + 1) % videos.length
-        console.log('Cycling to video', currentVideoIndex, videos[currentVideoIndex])
-        videoElement.src = videos[currentVideoIndex]
-        videoElement.load()
-        videoElement.play().catch(error => {
-          console.log('Video play failed:', error)
-        })
+        const nextVideo = videos[currentVideoIndex]
+        
+        // Preload the next video
+        const tempVideo = document.createElement('video')
+        tempVideo.src = nextVideo
+        tempVideo.load()
+        
+        // When the next video is ready, switch to it
+        tempVideo.addEventListener('canplaythrough', () => {
+          videoElement.src = nextVideo
+          videoElement.currentTime = 0
+          videoElement.play().catch(error => {
+            console.log('Video play failed:', error)
+          })
+        }, { once: true })
       }
       
       // Set initial video
-      console.log('Setting initial video:', videos[0])
       videoElement.src = videos[0]
       videoElement.load()
       videoElement.play().catch(error => {
@@ -55,8 +59,6 @@ export default function LandingPage() {
       
       // Cleanup interval on component unmount
       return () => clearInterval(interval)
-    } else {
-      console.log('Video element not found!')
     }
   }, [])
 
@@ -66,11 +68,10 @@ export default function LandingPage() {
       <div className="fixed inset-0 w-full h-full z-0">
         <video
           id="heroVideo"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-opacity duration-500"
           autoPlay
           muted
           playsInline
-          loop
           src="/videos/614440_Doctor Tablet Kid Patient_By_Pressmaster_Artlist_HD.mp4"
         >
           Your browser does not support the video tag.
