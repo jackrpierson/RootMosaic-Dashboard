@@ -17,9 +17,11 @@ export default function LandingPage() {
   // Video cycling functionality
   useEffect(() => {
     const videos = [
-      '/videos/251667_Automobile Car Engineering Mechanic_By_Thomas_Gellert_Artlist_HD.mp4',
-      '/videos/54072_Mechanic working on engine in garage_By_Ami_Bornstein_Artlist_HD.mp4',
-      '/videos/6266834_Mechanic Repair Car Garage_By_Felbaba_Volodymyr_Artlist_HD.mp4'
+      '/videos/614440_Doctor Tablet Kid Patient_By_Pressmaster_Artlist_HD.mp4',
+      '/videos/165203_Man drilling a screw into wood_By_Max_Freyss_Artlist_HD.mp4',
+      '/videos/634257_3d Conveyor Boxes Storage_By_Daniel_Megias_Del_Pozo_Artlist_HD.mp4',
+      '/videos/326803_Forklift Shelves Crates Boxes_By_Brad_Day_Artlist_HD.mp4',
+      '/videos/54072_Mechanic working on engine in garage_By_Ami_Bornstein_Artlist_HD.mp4'
     ]
     
     let currentVideoIndex = 0
