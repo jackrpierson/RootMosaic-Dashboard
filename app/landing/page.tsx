@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 
 export default function LandingPage() {
@@ -14,453 +14,381 @@ export default function LandingPage() {
     window.location.href = '/analytics'
   }
 
-  // Video cycling functionality
-  useEffect(() => {
-    const videos = [
-      '/videos/251667_Automobile Car Engineering Mechanic_By_Thomas_Gellert_Artlist_HD.mp4',
-      '/videos/54072_Mechanic working on engine in garage_By_Ami_Bornstein_Artlist_HD.mp4',
-      '/videos/6266834_Mechanic Repair Car Garage_By_Felbaba_Volodymyr_Artlist_HD.mp4'
-    ]
-    
-    let currentVideoIndex = 0
-    const videoElement = document.getElementById('heroVideo') as HTMLVideoElement
-    
-    if (videoElement) {
-      const cycleVideos = () => {
-        currentVideoIndex = (currentVideoIndex + 1) % videos.length
-        videoElement.src = videos[currentVideoIndex]
-        videoElement.load()
-        videoElement.play()
-      }
-      
-      // Set initial video
-      videoElement.src = videos[0]
-      
-      // Set up interval to cycle videos every 5 seconds
-      const interval = setInterval(cycleVideos, 5000)
-      
-      // Cleanup interval on component unmount
-      return () => clearInterval(interval)
-    }
-  }, [])
-
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black text-white">
       {/* Header */}
-      <header className="border-b border-gray-200">
+      <header className="border-b border-gray-800">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
                 <span className="text-white font-bold text-sm">R</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">ROOTMOSAIC</span>
+              <span className="text-xl font-bold text-white">ROOTMOSAIC</span>
             </div>
             
-            
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#services" className="text-gray-300 hover:text-white transition-colors">Services</a>
+              <a href="#industries" className="text-gray-300 hover:text-white transition-colors">Industries</a>
+              <a href="#process" className="text-gray-300 hover:text-white transition-colors">Process</a>
+              <a href="#results" className="text-gray-300 hover:text-white transition-colors">Results</a>
+            </nav>
 
             <div className="flex items-center space-x-4">
               <button 
                 onClick={() => setIsSignInOpen(true)}
-                className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+                className="text-gray-300 hover:text-white transition-colors"
               >
                 Sign In
+              </button>
+              <button className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+                Book Consultation
               </button>
             </div>
           </div>
         </div>
       </header>
 
-             {/* Hero Section with Video Background */}
-       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-         {/* Video Background */}
-         <div className="absolute inset-0 w-full h-full">
-           <video
-             id="heroVideo"
-             className="w-full h-full object-cover"
-             autoPlay
-             muted
-             playsInline
-           >
-           </video>
-           {/* Dark overlay for better text readability */}
-           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-         </div>
-
-         {/* Content Overlay */}
-         <div className="relative z-10 container mx-auto px-4 py-20">
-           <div className="grid lg:grid-cols-2 gap-12 items-center">
-             <div className="text-white">
-               <h1 className="text-5xl font-bold mb-6 leading-tight">
-                 Stop Repeat Repairs.<br />
-                 <span className="text-blue-400">Unlock Hidden Profit</span><br />
-                 in Your Shop.
-               </h1>
-               <p className="text-xl text-gray-200 mb-8 leading-relaxed">
-                 RootMosaic uses AI to uncover the real causes of comebacks and inefficiencies — so you keep customers happy and profits strong.
-               </p>
-               
-               {/* Key Statistic */}
-               <div className="bg-gradient-to-r from-red-500 to-blue-500 rounded-lg p-6 mb-8 inline-block">
-                 <div className="text-3xl font-bold text-white">
-                   $47,892 average savings per shop
-                 </div>
-                 <div className="text-white/80 text-sm mt-1">From reduced comebacks and improved efficiency</div>
-               </div>
-
-               {/* CTA Buttons */}
-               <div className="flex flex-col sm:flex-row gap-4">
-                 <button 
-                   onClick={() => setIsSignInOpen(true)}
-                   className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-blue-700 transition-colors shadow-lg"
-                 >
-                   See RootMosaic in Action
-                 </button>
-                 <button className="bg-white text-gray-800 px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-100 transition-colors shadow-lg">
-                   Request a Demo
-                 </button>
-               </div>
-             </div>
-             
-             {/* Dashboard Preview */}
-             <div className="relative">
-               <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg p-4 shadow-2xl border border-white/10">
-                 <div className="bg-gray-800/80 rounded-lg p-6">
-                   <div className="flex items-center justify-between mb-4">
-                     <h3 className="text-white font-semibold">Systemic Issue Detected</h3>
-                     <span className="bg-red-500 text-white px-2 py-1 rounded text-sm">High Priority</span>
-                   </div>
-                   <div className="space-y-3">
-                     <div className="bg-gray-700/80 rounded p-3">
-                       <div className="text-red-400 font-medium">2018-2020 Honda CR-V</div>
-                       <div className="text-gray-300 text-sm">AC Compressor failures: 12 cases in 3 months</div>
-                       <div className="text-green-400 text-sm">Potential savings: $8,400</div>
-                     </div>
-                     <div className="bg-gray-700/80 rounded p-3">
-                       <div className="text-orange-400 font-medium">Technician Efficiency Alert</div>
-                       <div className="text-gray-300 text-sm">Mike S. taking 40% longer on brake jobs</div>
-                       <div className="text-green-400 text-sm">Training opportunity identified</div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-             </div>
-           </div>
-         </div>
-       </section>
-
-      {/* Problem / Pain Point Section */}
-      <section className="py-20 px-4 bg-red-50">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-12">
-            Comebacks are killing your margins
-          </h2>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-lg p-8 shadow-lg">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Missed Diagnoses Cost Thousands
-              </h3>
-              <p className="text-gray-600">
-                Each comeback costs your shop $500-2000 in lost time, parts, and customer trust.
+      {/* Hero Section */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                Business growth
+                <br />
+                <span className="text-blue-400">reimagined.</span>
+              </h1>
+              <p className="text-xl text-gray-300 mb-8 leading-relaxed">
+                The best way to scale your business without the growing pains.
+                <br />
+                Unlock hidden profits and streamline operations with data-driven insights.
               </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button className="bg-white text-black px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors font-medium flex items-center justify-center">
+                  Book Consultation
+                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+                <button className="text-white hover:text-gray-300 transition-colors font-medium flex items-center justify-center">
+                  View Results
+                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
             </div>
-
-            <div className="bg-white rounded-lg p-8 shadow-lg">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                </svg>
+            <div className="relative">
+              <div className="w-full h-96 bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-2xl backdrop-blur-sm border border-gray-800 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-300">Growth Analytics Dashboard</p>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Technicians Spinning Wheels
-              </h3>
-              <p className="text-gray-600">
-                Your team wastes hours on the same problems instead of fixing root causes.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-lg p-8 shadow-lg">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Reputation at Risk
-              </h3>
-              <p className="text-gray-600">
-                Every comeback damages your shop&apos;s reputation and drives customers away.
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-             {/* How RootMosaic Solves It */}
-       <section id="features" className="py-20 px-4">
-         <div className="container mx-auto">
-           <div className="text-center mb-16">
-             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-               How RootMosaic Solves It
-             </h2>
-             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-               AI-powered insights that find the real problems hiding in your service records.
-             </p>
-           </div>
+      {/* Stats Section */}
+      <section className="py-16 px-4 bg-gray-900/50">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            <div>
+              <div className="text-3xl font-bold text-blue-400 mb-2">47%</div>
+              <p className="text-gray-300">Average profit increase</p>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-green-400 mb-2">$89,000</div>
+              <p className="text-gray-300">Average annual savings</p>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-purple-400 mb-2">3.2x</div>
+              <p className="text-gray-300">ROI within 12 months</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-           {/* Visual Process Flow */}
-           <div className="mb-16">
-             <div className="flex items-center justify-center space-x-4 mb-8">
-               <div className="flex items-center">
-                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                   <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                     <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                   </svg>
-                 </div>
-                 <span className="ml-3 text-sm font-medium text-gray-600">Service Records</span>
-               </div>
-               <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-               </svg>
-               <div className="flex items-center">
-                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                   <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                     <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                   </svg>
-                 </div>
-                 <span className="ml-3 text-sm font-medium text-gray-600">AI Analysis</span>
-               </div>
-               <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-               </svg>
-               <div className="flex items-center">
-                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                   <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                     <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                   </svg>
-                 </div>
-                 <span className="ml-3 text-sm font-medium text-gray-600">Actionable Insights</span>
-               </div>
-             </div>
-           </div>
+      {/* Industries Section */}
+      <section id="industries" className="py-20 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Industries We Serve</h2>
+            <p className="text-xl text-gray-300">Specialized solutions for your unique business challenges</p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Auto Repair */}
+            <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-blue-500/50 transition-colors">
+              <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Auto Repair</h3>
+              <p className="text-gray-300 text-sm">Reduce comebacks, optimize technician efficiency, and increase customer retention</p>
+            </div>
 
-           <div className="grid md:grid-cols-3 gap-12">
-             {/* Feature 1 */}
-             <div className="text-center">
-               <div className="relative mb-6">
-                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mx-auto shadow-lg">
-                   <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                     <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                   </svg>
-                 </div>
-                 {/* Visual Pattern */}
-                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-                   <span className="text-white text-xs font-bold">!</span>
-                 </div>
-               </div>
-               <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                 Systemic Issue Detection
-               </h3>
-               <p className="text-gray-600 mb-4">
-                 AI finds patterns in your service records that cause repeated losses.
-               </p>
-               {/* Visual Example */}
-               <div className="bg-gray-50 rounded-lg p-4 text-left">
-                 <div className="flex items-center space-x-2 mb-2">
-                   <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                   <span className="text-sm font-medium text-gray-700">Pattern Detected</span>
-                 </div>
-                 <div className="text-xs text-gray-600">
-                   Honda CR-V AC failures: 12 cases → $8,400 potential savings
-                 </div>
-               </div>
-             </div>
+            {/* Independent Contractors */}
+            <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-green-500/50 transition-colors">
+              <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Independent Contractors</h3>
+              <p className="text-gray-300 text-sm">Streamline project management, optimize pricing, and scale operations efficiently</p>
+            </div>
 
-             {/* Feature 2 */}
-             <div className="text-center">
-               <div className="relative mb-6">
-                 <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto shadow-lg">
-                   <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                     <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                   </svg>
-                 </div>
-                 {/* Visual Data Flow */}
-                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                   <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                     <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                   </svg>
-                 </div>
-               </div>
-               <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                 Smart Vehicle Summaries
-               </h3>
-               <p className="text-gray-600 mb-4">
-                 See real-time complaint and recall data tied to the VIN.
-               </p>
-               {/* Visual Example */}
-               <div className="bg-gray-50 rounded-lg p-4 text-left">
-                 <div className="flex items-center space-x-2 mb-2">
-                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                   <span className="text-sm font-medium text-gray-700">VIN Analysis</span>
-                 </div>
-                 <div className="text-xs text-gray-600">
-                   JHMCR2F8XEC123456 → Known AC issues + 2 recalls
-                 </div>
-               </div>
-             </div>
+            {/* Manufacturing */}
+            <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-purple-500/50 transition-colors">
+              <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Manufacturing</h3>
+              <p className="text-gray-300 text-sm">Optimize production processes, reduce waste, and improve quality control</p>
+            </div>
 
-             {/* Feature 3 */}
-             <div className="text-center">
-               <div className="relative mb-6">
-                 <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mx-auto shadow-lg">
-                   <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                     <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                   </svg>
-                 </div>
-                 {/* Visual Action Steps */}
-                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                   <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                     <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                   </svg>
-                 </div>
-               </div>
-               <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                 Corrective Action Plans
-               </h3>
-               <p className="text-gray-600 mb-4">
-                 Get step-by-step recommendations to fix the root cause — not just the symptom.
-               </p>
-               {/* Visual Example */}
-               <div className="bg-gray-50 rounded-lg p-4 text-left">
-                 <div className="flex items-center space-x-2 mb-2">
-                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                   <span className="text-sm font-medium text-gray-700">Action Plan</span>
-                 </div>
-                 <div className="text-xs text-gray-600">
-                   1. Check condenser 2. Replace compressor 3. Update procedure
-                 </div>
-               </div>
-             </div>
-           </div>
+            {/* Logistics */}
+            <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-orange-500/50 transition-colors">
+              <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Logistics</h3>
+              <p className="text-gray-300 text-sm">Optimize routes, reduce delivery times, and improve supply chain efficiency</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-           {/* Visual Cycle */}
-           <div className="mt-16 text-center">
-             <h3 className="text-2xl font-bold text-gray-900 mb-8">Continuous Improvement Cycle</h3>
-             <div className="flex items-center justify-center space-x-8">
-               <div className="flex flex-col items-center">
-                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-                   <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                     <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                   </svg>
-                 </div>
-                 <span className="text-sm font-medium text-gray-700">Detect</span>
-               </div>
-               <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-               </svg>
-               <div className="flex flex-col items-center">
-                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-2">
-                   <svg className="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                     <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                   </svg>
-                 </div>
-                 <span className="text-sm font-medium text-gray-700">Analyze</span>
-               </div>
-               <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-               </svg>
-               <div className="flex flex-col items-center">
-                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-2">
-                   <svg className="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                     <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                   </svg>
-                 </div>
-                 <span className="text-sm font-medium text-gray-700">Act</span>
-               </div>
-               <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-               </svg>
-               <div className="flex flex-col items-center">
-                 <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-2">
-                   <svg className="w-8 h-8 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
-                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                   </svg>
-                 </div>
-                 <span className="text-sm font-medium text-gray-700">Monitor</span>
-               </div>
-             </div>
-           </div>
-         </div>
-       </section>
+      {/* Services Section */}
+      <section id="services" className="py-20 px-4 bg-gray-900/50">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Go beyond traditional consulting</h2>
+            <p className="text-xl text-gray-300">
+              Data-driven insights and actionable strategies that deliver measurable results
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Efficiency Analysis */}
+            <div className="bg-black/50 rounded-xl p-6 border border-gray-800">
+              <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Efficiency Analysis</h3>
+              <p className="text-gray-300 text-sm mb-4">Identify bottlenecks and optimize your operations for maximum productivity</p>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div>• Process optimization</div>
+                <div>• Resource allocation</div>
+                <div>• Time management</div>
+              </div>
+            </div>
+
+            {/* Growth Strategy */}
+            <div className="bg-black/50 rounded-xl p-6 border border-gray-800">
+              <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Growth Strategy</h3>
+              <p className="text-gray-300 text-sm mb-4">Develop scalable strategies to expand your market reach and increase revenue</p>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div>• Market analysis</div>
+                <div>• Revenue optimization</div>
+                <div>• Expansion planning</div>
+              </div>
+            </div>
+
+            {/* Performance Tracking */}
+            <div className="bg-black/50 rounded-xl p-6 border border-gray-800">
+              <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Performance Tracking</h3>
+              <p className="text-gray-300 text-sm mb-4">Monitor key metrics and track progress with real-time dashboards</p>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div>• KPI monitoring</div>
+                <div>• Progress tracking</div>
+                <div>• ROI measurement</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Process Section */}
+      <section id="process" className="py-20 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">How We Drive Results</h2>
+            <p className="text-xl text-gray-300">A proven methodology that delivers measurable outcomes</p>
+          </div>
+          
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-blue-400">1</span>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Analyze</h3>
+              <p className="text-gray-300 text-sm">Deep dive into your current operations and identify improvement opportunities</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-green-400">2</span>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Strategize</h3>
+              <p className="text-gray-300 text-sm">Develop customized solutions tailored to your specific business needs</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-purple-400">3</span>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Implement</h3>
+              <p className="text-gray-300 text-sm">Execute strategies with hands-on support and guidance throughout the process</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-orange-400">4</span>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Optimize</h3>
+              <p className="text-gray-300 text-sm">Continuously monitor and refine strategies for ongoing improvement</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-600/10 to-purple-600/10">
+        <div className="container mx-auto max-w-4xl text-center">
+          <h2 className="text-4xl font-bold mb-4">Ready to transform your business?</h2>
+          <p className="text-xl text-gray-300 mb-8">
+            Join hundreds of small businesses that have increased their profits and streamlined operations
+          </p>
+          <button className="bg-white text-black px-8 py-4 rounded-lg hover:bg-gray-200 transition-colors font-medium text-lg">
+            Book Your Free Consultation
+          </button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 px-4 border-t border-gray-800">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">R</span>
+                </div>
+                <span className="text-xl font-bold text-white">ROOTMOSAIC</span>
+              </div>
+              <p className="text-gray-300 text-sm">
+                Empowering small businesses with data-driven growth strategies and operational excellence.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-bold mb-4">Services</h4>
+              <ul className="space-y-2 text-sm text-gray-300">
+                <li><a href="#" className="hover:text-white transition-colors">Efficiency Analysis</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Growth Strategy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Performance Tracking</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Process Optimization</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-bold mb-4">Industries</h4>
+              <ul className="space-y-2 text-sm text-gray-300">
+                <li><a href="#" className="hover:text-white transition-colors">Auto Repair</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contractors</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Manufacturing</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Logistics</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-bold mb-4">Company</h4>
+              <ul className="space-y-2 text-sm text-gray-300">
+                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Terms</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+            © 2024 RootMosaic. All rights reserved.
+          </div>
+        </div>
+      </footer>
 
       {/* Sign In Modal */}
       {isSignInOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Sign In to RootMosaic</h2>
+          <div className="bg-gray-900 rounded-xl p-8 max-w-md w-full mx-4 border border-gray-800">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Sign In</h2>
               <button 
                 onClick={() => setIsSignInOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-white"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-
+            
             <form onSubmit={handleSignIn} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
+                <label className="block text-sm font-medium mb-2">Email</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="admin@shop.com"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-blue-500"
                   required
                 />
               </div>
-
+              
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Password
-                </label>
+                <label className="block text-sm font-medium mb-2">Password</label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="••••••••"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-blue-500"
                   required
                 />
               </div>
-
+              
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
               >
-                Sign In to Dashboard
+                Sign In
               </button>
             </form>
-
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                Don&apos;t have an account?{' '}
-                <a href="#" className="text-blue-600 hover:text-blue-800">
-                  Contact us
-                </a>
-              </p>
-            </div>
           </div>
         </div>
       )}
