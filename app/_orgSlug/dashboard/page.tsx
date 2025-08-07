@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { MetricsGrid } from '@/components/MetricsGrid'
-import { TechnicianAnalysis } from '@/components/TechnicianAnalysis'
-import { FinancialCalculator } from '@/components/FinancialCalculator'
-import { AlertsSection } from '@/components/AlertsSection'
-import { SystemicIssues } from '@/components/SystemicIssues'
-import { PredictiveAnalytics } from '@/components/PredictiveAnalytics'
-import { FiltersPanel } from '@/components/FiltersPanel'
-import { DashboardHeader } from '@/components/DashboardHeader'
+import MetricsGrid from '@/components/MetricsGrid'
+import TechnicianAnalysis from '@/components/TechnicianAnalysis'
+import FinancialCalculator from '@/components/FinancialCalculator'
+import AlertsSection from '@/components/AlertsSection'
+import SystemicIssues from '@/components/SystemicIssues'
+import PredictiveAnalytics from '@/components/PredictiveAnalytics'
+import FiltersPanel from '@/components/FiltersPanel'
+import DashboardHeader from '@/components/DashboardHeader'
 
 export default function OrganizationDashboard() {
   const params = useParams()

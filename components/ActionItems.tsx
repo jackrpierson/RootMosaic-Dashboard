@@ -98,7 +98,7 @@ export default function ActionItems({ data }: ActionItemsProps) {
       <div className="glass rounded-xl p-6">
         <div className="text-center">
           <div className="loading-spinner w-12 h-12 mx-auto"></div>
-          <p className="text-gray-300 mt-4">Analyzing your data...</p>
+          <p className="text-gray-300 mt-4">Analyzing your data for recommendations...</p>
         </div>
       </div>
     )
@@ -115,7 +115,7 @@ export default function ActionItems({ data }: ActionItemsProps) {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-bold text-white">💰 Quick Win Summary</h3>
             <span className="text-sm text-green-400 font-medium">
-              {recommendations.length} actions selected
+              Top {recommendations.length} actions selected
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
