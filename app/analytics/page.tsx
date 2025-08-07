@@ -23,6 +23,8 @@ export default function AnalyticsDashboard() {
     problemType: null
   })
 
+  const [showDetailedAnalytics, setShowDetailedAnalytics] = useState(false)
+
   // Load all data for comprehensive analysis
   const { data: allData, isLoading: allDataLoading } = useTransformedData({ limit: 50000 })
   
@@ -101,22 +103,74 @@ export default function AnalyticsDashboard() {
           </p>
         </div>
 
-        {/* Main dashboard content */}
-        <div className="space-y-8">
+        {/* HERO SECTION - Most Critical Insights */}
+        <div className="mb-12">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold gradient-text mb-2">Your Business Health</h1>
+            <p className="text-gray-400">Here's what needs your attention right now</p>
+          </div>
+          
           <MetricsGrid data={filteredData} />
-
-          <ActionItems data={filteredData} />
-
-          <AlertsSection data={filteredData} />
-
-          <TechnicianAnalysis data={filteredData} />
-
-          <SystemicIssues data={filteredData} />
-
-          <FinancialCalculator data={filteredData} />
-
-          <PredictiveAnalytics data={filteredData} />
         </div>
+
+        {/* IMMEDIATE ACTIONS SECTION */}
+        <div className="mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-white mb-2">Immediate Actions</h2>
+            <p className="text-gray-400">Start here to see the biggest impact</p>
+          </div>
+          
+          <ActionItems data={filteredData} />
+        </div>
+
+        {/* CRITICAL ALERTS */}
+        <div className="mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-white mb-2">Critical Alerts</h2>
+            <p className="text-gray-400">Issues requiring immediate attention</p>
+          </div>
+          
+          <AlertsSection data={filteredData} />
+        </div>
+
+        {/* DETAILED ANALYTICS TOGGLE */}
+        <div className="text-center mb-8">
+          <button
+            onClick={() => setShowDetailedAnalytics(!showDetailedAnalytics)}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 flex items-center mx-auto space-x-2"
+          >
+            <span>{showDetailedAnalytics ? 'Hide' : 'Show'} Detailed Analytics</span>
+            <svg 
+              className={`w-5 h-5 transition-transform duration-200 ${showDetailedAnalytics ? 'rotate-180' : ''}`} 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <p className="text-sm text-gray-500 mt-2">
+            {showDetailedAnalytics ? 'Hide detailed breakdowns and predictions' : 'View technician analysis, systemic issues, and predictions'}
+          </p>
+        </div>
+
+        {/* DETAILED ANALYTICS - Collapsible */}
+        {showDetailedAnalytics && (
+          <div className="space-y-8 animate-fadeIn">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-white mb-2">Deep Dive Analytics</h2>
+              <p className="text-gray-400">Detailed insights for optimization</p>
+            </div>
+
+            <TechnicianAnalysis data={filteredData} />
+
+            <SystemicIssues data={filteredData} />
+
+            <FinancialCalculator data={filteredData} />
+
+            <PredictiveAnalytics data={filteredData} />
+          </div>
+        )}
       </div>
     </div>
   )

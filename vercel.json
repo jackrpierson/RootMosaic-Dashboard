@@ -1,9 +1,31 @@
 {
   "version": 2,
-  "name": "rootmosaic-dashboard",
+  "name": "rootmosaic-auto-repair",
   "functions": {
     "app/api/**/*.ts": {
       "maxDuration": 30
     }
-  }
+  },
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "@supabase-url",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key",
+    "SUPABASE_SERVICE_ROLE_KEY": "@supabase-service-key",
+    "NEXT_PUBLIC_APP_INDUSTRY": "auto-repair",
+    "NEXT_PUBLIC_APP_NAME": "RootMosaic Auto Repair Analytics",
+    "NEXT_PUBLIC_APP_DESCRIPTION": "Comprehensive analytics platform for auto repair shops",
+    "NEXT_PUBLIC_PRIMARY_COLOR": "#1976d2",
+    "NEXT_PUBLIC_SECONDARY_COLOR": "#42a5f5"
+  },
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/landing",
+      "permanent": false
+    },
+    {
+      "source": "/analytics",
+      "destination": "/landing",
+      "permanent": false
+    }
+  ]
 }
